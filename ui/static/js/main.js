@@ -33,7 +33,7 @@ const drawPlot = () => {
   var data = [
     {
       x: x,
-      y: ,
+      y: y,
 
       type: 'scatter',
     },
