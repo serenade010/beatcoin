@@ -1,1 +1,3 @@
 # beatcoin
+
+TODO:(under discussion)
