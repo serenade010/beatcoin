@@ -1,0 +1,47 @@
+{{define "title"}}Signup {{end}}{{define "main"}}
+<div class="column"></div>
+<div class="column"></div>
+<div class="column"></div>
+<section
+  class="is-is-fullheight is-flex is-flex-direction-column is-align-items-center is-justify-content-center mt-6"
+>
+  <p class="title">Begin your journey now</p>
+  <div class="column is-half">
+    <form class="box is-flex is-flex-direction-column">
+      <div class="field">
+        <label class="label">Username</label>
+        <div class="control">
+          <input class="input" type="email" placeholder="e.g. alex" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Email</label>
+        <div class="control">
+          <input
+            class="input"
+            type="email"
+            placeholder="e.g. alex@example.com"
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Password</label>
+        <div class="control">
+          <input class="input" type="password" placeholder="********" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">Confirm Password</label>
+        <div class="control">
+          <input class="input" type="password" placeholder="********" />
+        </div>
+      </div>
+
+      <button class="button is-warning">Sign up</button>
+    </form>
+  </div>
+</section>
+
+{{end}}

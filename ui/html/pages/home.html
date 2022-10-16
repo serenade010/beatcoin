@@ -1,0 +1,35 @@
+{{define "title"}}Home{{end}} {{define "main"}}
+
+<section class="hero is-fullheight-with-navbar has-background-warning">
+  <div class="hero-body ml-6">
+    <div class="columns is-flex is-flex-direction-column">
+      <p class="title mr-6">Train your own neural network in 30 seconds</p>
+      <div class="column is-flex is-justify-content-start">
+        <button class="button is-warning is-light is-large" id="StartBtn">
+          Getting Started
+        </button>
+      </div>
+    </div>
+    <div class="block ml-6"></div>
+    <div class="block ml-6"></div>
+    <figure class="image ml-6">
+      <iframe
+        width="560"
+        height="315"
+        src="https://www.youtube.com/embed/uADESalaIE4"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </figure>
+  </div>
+</section>
+
+<script type="text/javascript">
+  document.getElementById('StartBtn').onclick = function () {
+    location.href = '/model/create';
+  };
+</script>
+
+{{end}}
