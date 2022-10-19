@@ -43,3 +43,11 @@ const drawPlot = () => {
 };
 
 fetchData();
+
+const selectStep = (s) => {
+  lis = document.querySelectorAll('li');
+  lis.forEach((li) => {
+    li.classList.remove('is-active');
+  });
+  document.querySelector(`#step-${s}`).classList.add('is-active');
+};
