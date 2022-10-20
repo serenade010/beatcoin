@@ -14,6 +14,8 @@ func (app *application) routes() *http.ServeMux {
 	mux.HandleFunc("/model/create", app.modelCreate)
 	mux.HandleFunc("/user/signup", app.userSignup)
 	mux.HandleFunc("/user/login", app.userLogin)
+	mux.HandleFunc("/test/create", app.snippetCreate)
+	mux.HandleFunc("/test/view", app.snippetView)
 
 	return mux
 }
