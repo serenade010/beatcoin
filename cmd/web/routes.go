@@ -1,21 +1,33 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
 
-func (app *application) routes() *http.ServeMux {
+	"github.com/julienschmidt/httprouter"
+	"github.com/justinas/alice"
+)
 
-	mux := http.NewServeMux()
+func (app *application) routes() http.Handler {
 
+	router := httprouter.New()
+
+	router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		app.notFound(w)
+	})
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
+	router.Handler(http.MethodGet, "/static/*filepath", http.StripPrefix("/static", fileServer))
 
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/model/rank", app.modelRank)
-	mux.HandleFunc("/model/create", app.modelCreate)
-	mux.HandleFunc("/user/signup", app.userSignup)
-	mux.HandleFunc("/user/login", app.userLogin)
-	mux.HandleFunc("/test/create", app.snippetCreate)
-	mux.HandleFunc("/test/view", app.snippetView)
+	router.HandlerFunc(http.MethodGet, "/", app.home)
+	router.HandlerFunc(http.MethodGet, "/model/rank", app.modelRank)
+	router.HandlerFunc(http.MethodGet, "/user/signup", app.userSignup)
+	router.HandlerFunc(http.MethodGet, "/user/login", app.userLogin)
+	router.HandlerFunc(http.MethodGet, "/model/view/:id", app.modelView)
+	router.HandlerFunc(http.MethodGet, "/model/play", app.modelPlay)
+	router.HandlerFunc(http.MethodGet, "/model/create", app.modelCreate)
+	router.HandlerFunc(http.MethodPost, "/model/create", app.modelCreateModel)
 
-	return mux
+	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
+
+	return standard.Then(router)
+
 }

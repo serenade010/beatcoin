@@ -6,22 +6,23 @@ import (
 )
 
 type Model struct {
-	id             int
-	belongs_to     int
-	ratio_of_train float32
-	look_back      int
-	forecast_days  int
-	crypto         string
-	first_layer    int
-	second_layer   sql.NullInt16
-	third_layer    sql.NullInt16
-	first_index    sql.NullString
-	second_index   sql.NullString
-	third_index    sql.NullString
-	learning_rate  float32
-	epoch          int
-	batch_size     int
-	modelerr       sql.NullFloat64
+	Id             int
+	Name           string
+	Belongs_to     int
+	Ratio_of_train float32
+	Look_back      int
+	Forecast_days  int
+	Crypto         string
+	First_layer    int
+	Second_layer   sql.NullInt16
+	Third_layer    sql.NullInt16
+	First_index    sql.NullString
+	Second_index   sql.NullString
+	Third_index    sql.NullString
+	Learning_rate  float32
+	Epoch          int
+	Batch_size     int
+	Modelerr       sql.NullFloat64
 }
 
 type ModelModel struct {
@@ -30,10 +31,10 @@ type ModelModel struct {
 
 // This will insert a new snippet into the database.
 
-func (m *ModelModel) Insert(belongs_to int, ratio_of_train float32, look_back int, forecast_days int, crypto string, first_layer int, second_layer int, third_layer int, first_index string, second_index string, third_index string, learning_rate float32, epoch int, batch_size int, modelerr float32) error {
-	stmt := "INSERT INTO model (belongs_to,ratio_of_train,look_back,forecast_days,crypto,first_layer,second_layer,third_layer,first_index,second_index,third_index,learning_rate,epoch,batch_size,modelerr) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15);"
+func (m *ModelModel) Insert(name string, belongs_to int, ratio_of_train float32, look_back int, forecast_days int, crypto string, first_layer int, second_layer int, third_layer int, first_index string, second_index string, third_index string, learning_rate float32, epoch int, batch_size int, modelerr float32) error {
+	stmt := "INSERT INTO model (modelname,belongs_to,ratio_of_train,look_back,forecast_days,crypto,first_layer,second_layer,third_layer,first_index,second_index,third_index,learning_rate,epoch,batch_size,modelerr) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16);"
 
-	_, err := m.DB.Exec(stmt, belongs_to, ratio_of_train, look_back, forecast_days, crypto, first_layer, second_layer, third_layer, first_index, second_index, third_index, learning_rate, epoch, batch_size, modelerr)
+	_, err := m.DB.Exec(stmt, name, belongs_to, ratio_of_train, look_back, forecast_days, crypto, first_layer, second_layer, third_layer, first_index, second_index, third_index, learning_rate, epoch, batch_size, modelerr)
 	if err != nil {
 		return err
 	}
@@ -44,13 +45,13 @@ func (m *ModelModel) Insert(belongs_to int, ratio_of_train float32, look_back in
 //This will return a specific snippet based on its id.
 
 func (m *ModelModel) Get(id int) (*Model, error) {
-	stmt := "SELECT id,belongs_to,ratio_of_train,look_back,forecast_days,crypto,first_layer,second_layer,third_layer,first_index,second_index,third_index,learning_rate,epoch,batch_size,modelerr FROM model WHERE id=$1"
+	stmt := "SELECT id,modelname,belongs_to,ratio_of_train,look_back,forecast_days,crypto,first_layer,second_layer,third_layer,first_index,second_index,third_index,learning_rate,epoch,batch_size,modelerr FROM model WHERE id=$1"
 
 	row := m.DB.QueryRow(stmt, id)
 
 	model := &Model{}
 
-	err := row.Scan(&model.id, &model.belongs_to, &model.ratio_of_train, &model.look_back, &model.forecast_days, &model.crypto, &model.first_layer, &model.second_layer, &model.third_layer, &model.first_index, &model.second_index, &model.third_index, &model.learning_rate, &model.epoch, &model.batch_size, &model.modelerr)
+	err := row.Scan(&model.Id, &model.Name, &model.Belongs_to, &model.Ratio_of_train, &model.Look_back, &model.Forecast_days, &model.Crypto, &model.First_layer, &model.Second_layer, &model.Third_layer, &model.First_index, &model.Second_index, &model.Third_index, &model.Learning_rate, &model.Epoch, &model.Batch_size, &model.Modelerr)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -64,7 +65,7 @@ func (m *ModelModel) Get(id int) (*Model, error) {
 }
 
 func (m *ModelModel) Best() ([]*Model, error) {
-	stmt := "SELECT id,belongs_to,ratio_of_train,look_back,forecast_days,crypto,first_layer,second_layer,third_layer,first_index,second_index,third_index,learning_rate,epoch,batch_size,modelerr FROM model ORDER BY modelerr ASC LIMIT 10"
+	stmt := "SELECT id,modelname,belongs_to,ratio_of_train,look_back,forecast_days,crypto,first_layer,second_layer,third_layer,first_index,second_index,third_index,learning_rate,epoch,batch_size,modelerr FROM model ORDER BY modelerr ASC LIMIT 10"
 
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
@@ -78,7 +79,8 @@ func (m *ModelModel) Best() ([]*Model, error) {
 	for rows.Next() {
 		model := &Model{}
 
-		err := rows.Scan(&model.id, &model.belongs_to, &model.ratio_of_train, &model.look_back, &model.forecast_days, &model.crypto, &model.first_layer, &model.second_layer, &model.third_layer, &model.first_index, &model.second_index, &model.third_index, &model.learning_rate, &model.epoch, &model.batch_size, &model.modelerr)
+		err := rows.Scan(&model.Id, &model.Name, &model.Belongs_to, &model.Ratio_of_train, &model.Look_back, &model.Forecast_days, &model.Crypto, &model.First_layer, &model.Second_layer, &model.Third_layer, &model.First_index, &model.Second_index, &model.Third_index, &model.Learning_rate, &model.Epoch, &model.Batch_size, &model.Modelerr)
+
 		if err != nil {
 			return nil, err
 		}

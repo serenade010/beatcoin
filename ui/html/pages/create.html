@@ -1,48 +1,21 @@
-{{define "title"}}Create Model{{end}} {{define "main"}}
-<head>
-  <!-- Load plotly.js into the DOM -->
-  <script src="https://cdn.plot.ly/plotly-2.14.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
-</head>
-
-<body>
-  <div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
-  <script src="/static/js/create.js"></script>
-  <div class="tabs is-centered is-boxed is-medium is-fullwidth">
-    <ul>
-      <li class="is-active" id="step-one">
-        <a href="#" onclick="selectStep('one')"> Select Range</a>
-      </li>
-      <li id="step-two">
-        <a href="#" onclick="selectStep('two')"> Select Index</a>
-      </li>
-      <li id="step-three">
-        <a href="#" onclick="selectStep('three')"> Train</a>
-      </li>
-    </ul>
+{{define "title"}}Create a New Model{{end}} {{define "main"}}
+<form action="/model/create" method="POST">
+  <div>
+    <label>Title:</label>
+    <input type="text" name="title" />
   </div>
-  <section class="content">
-    <label for="start">Start date:</label>
-
-    <input
-      class="input is-primary"
-      type="date"
-      id="start"
-      name="trip-start"
-      value="2018-07-22"
-      min="2018-01-01"
-      max="2018-12-31"
-    />
-    <input
-      type="date"
-      id="start"
-      name="trip-start"
-      value="2018-07-22"
-      min="2018-01-01"
-      max="2018-12-31"
-    />
-  </section>
-</body>
-
+  <div>
+    <label>Content:</label>
+    <textarea name="content"></textarea>
+  </div>
+  <div>
+    <label>Delete in:</label>
+    <input type="radio" name="expires" value="365" checked /> One Year
+    <input type="radio" name="expires" value="7" /> One Week
+    <input type="radio" name="expires" value="1" /> One Day
+  </div>
+  <div>
+    <input type="submit" value="Publish snippet" />
+  </div>
+</form>
 {{end}}

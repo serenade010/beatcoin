@@ -1,0 +1,13 @@
+{{define "title"}}Rank{{end}} {{define "main"}}
+<h2>Top Snippets</h2>
+{{if .Models}}
+<table>
+  {{range .Models}}
+  <tr>
+    <td><a href="/model/view/{{.Id}}">{{.Name}}</a></td>
+  </tr>
+  {{end}}
+</table>
+{{else}}
+<p>There's nothing to see here... yet!</p>
+{{end}} {{end}}

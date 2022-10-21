@@ -1,0 +1,22 @@
+{{define "title"}}Model #{{.Model.Id}}{{end}} {{define "main"}}
+<div>
+  <div class="metadata">
+    <strong>{{.Model.Name}}</strong>
+    <span>{{.Model.Ratio_of_train}}</span>
+    <span>{{.Model.Look_back}}</span>
+    <span>{{.Model.Forecast_days}}</span>
+    <span>{{.Model.Crypto}}</span>
+    <span>{{.Model.First_layer}}</span>
+    <span>{{.Model.Second_layer.Int16}}</span>
+    <span>{{.Model.Third_layer.Int16}}</span>
+    <span>{{.Model.First_index.String}}</span>
+    <span>{{.Model.Second_index.String}}</span>
+    <span>{{.Model.Third_index.String}}</span>
+    <span>{{.Model.Learning_rate}}</span>
+    <span>{{.Model.Epoch}}</span>
+    <span>{{.Model.Batch_size}}</span>
+  </div>
+
+  <div class="metadata"></div>
+</div>
+{{end}}
