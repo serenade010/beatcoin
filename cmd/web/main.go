@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"database/sql"
 	"flag"
 	"html/template"
@@ -66,10 +67,17 @@ func main() {
 		sessionManager: sessionManager,
 	}
 
+	// Create non-default TLS settings.
+	// Only elliptic curves with assembly implementations are used.
+	tlsConfig := &tls.Config{
+		CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256},
+	}
+
 	srv := &http.Server{
-		Addr:     *addr,
-		ErrorLog: errorlog,
-		Handler:  app.routes(),
+		Addr:      *addr,
+		ErrorLog:  errorlog,
+		Handler:   app.routes(),
+		TLSConfig: tlsConfig,
 	}
 
 	infoLog.Printf("Starting server on %s", *addr)
