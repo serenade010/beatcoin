@@ -34,7 +34,7 @@ func main() {
 
 	// add url adress and database flags
 	addr := flag.String("addr", ":4000", "HTTP Network adress")
-	dsn := flag.String("dsn", os.Getenv("DB_URL"), "MySQL data source name")
+	dsn := flag.String("dsn", os.Getenv("DB_URL"), "SQL data source name")
 	flag.Parse()
 
 	db, err := openDB(*dsn)

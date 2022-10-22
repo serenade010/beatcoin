@@ -7,8 +7,11 @@
 <form action="/model/create" method="POST">
   <div class="field">
     <label class="label">Name</label>
+    {{with .Form.FieldErrors.name}}
+    <p class="error">ERROR MESSAGE HERE:{{.}}</p>
+    {{end}}
     <div class="control">
-      <input class="input" name="name" type="text" placeholder="Name" />
+      <input class="input" name="name" type="text" placeholder="Name" value="{{.Form.Name}}" />
     </div>
   </div>
 
