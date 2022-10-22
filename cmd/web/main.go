@@ -7,17 +7,21 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/alexedwards/scs/postgresstore"
+	"github.com/alexedwards/scs/v2"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/serenade010/beatcoin/internal/models"
 )
 
 type application struct {
-	errorLog      *log.Logger
-	infoLog       *log.Logger
-	models        *models.ModelModel
-	templateCache map[string]*template.Template
+	errorLog       *log.Logger
+	infoLog        *log.Logger
+	models         *models.ModelModel
+	templateCache  map[string]*template.Template
+	sessionManager *scs.SessionManager
 }
 
 func main() {
@@ -49,11 +53,16 @@ func main() {
 		errorlog.Fatal(err)
 	}
 
+	sessionManager := scs.New()
+	sessionManager.Store = postgresstore.New(db)
+	sessionManager.Lifetime = 12 * time.Hour
+
 	app := &application{
-		errorLog:      errorlog,
-		infoLog:       infoLog,
-		models:        &models.ModelModel{DB: db},
-		templateCache: templateCache,
+		errorLog:       errorlog,
+		infoLog:        infoLog,
+		models:         &models.ModelModel{DB: db},
+		templateCache:  templateCache,
+		sessionManager: sessionManager,
 	}
 
 	srv := &http.Server{

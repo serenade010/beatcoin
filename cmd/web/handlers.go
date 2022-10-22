@@ -149,7 +149,6 @@ func (app *application) modelCreateModel(w http.ResponseWriter, r *http.Request)
 
 	// Initialize a map holding any validations errors from the erroe fields
 	//TODO: add a validation for rest of the fields
-	//TODO: ERROR MESSAGE CAN NOT BE
 
 	form.CheckField(validator.NotBlank(form.Name), "name", "This field cannot be blank")
 	form.CheckField(validator.MaxChars(form.Name, 20), "name", "This field cannot be more than 20 characters long")
@@ -167,6 +166,7 @@ func (app *application) modelCreateModel(w http.ResponseWriter, r *http.Request)
 		app.serverError(w, err)
 		return
 	}
+	app.sessionManager.Put(r.Context(), "flash", "Model successfully created!")
 
 	http.Redirect(w, r, fmt.Sprintf("/model/view/%d", lastid), http.StatusSeeOther)
 }
@@ -189,5 +189,9 @@ func (app *application) modelView(w http.ResponseWriter, r *http.Request) {
 			app.serverError(w, err)
 		}
 	}
-	app.render(w, http.StatusOK, "view.html", &templateData{Model: model})
+
+	data := app.newTemplateData(r)
+	data.Model = model
+
+	app.render(w, http.StatusOK, "view.html", data)
 }
