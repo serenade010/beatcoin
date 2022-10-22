@@ -1,21 +1,135 @@
 {{define "title"}}Create a New Model{{end}} {{define "main"}}
+<head>
+  <link rel="stylesheet" href="/static/css/create.css" />
+  <script src="/static/js/create.js"></script>
+</head>
+
 <form action="/model/create" method="POST">
-  <div>
-    <label>Title:</label>
-    <input type="text" name="title" />
+  <div class="field">
+    <label class="label">Name</label>
+    <div class="control">
+      <input class="input" name="name" type="text" placeholder="Name" />
+    </div>
   </div>
-  <div>
-    <label>Content:</label>
-    <textarea name="content"></textarea>
+
+  <div class="field">
+    <label class="label">Ratio of Train Data</label>
+    <div class="control">
+      <input class="input" name="ratio_of_train" type="number" placeholder="0.8" step="0.1" />
+    </div>
   </div>
-  <div>
-    <label>Delete in:</label>
-    <input type="radio" name="expires" value="365" checked /> One Year
-    <input type="radio" name="expires" value="7" /> One Week
-    <input type="radio" name="expires" value="1" /> One Day
+  <div class="field">
+    <label class="label">Look Back Days</label>
+    <div class="control">
+      <input class="input" name="look_back" type="number" placeholder="5" />
+    </div>
   </div>
-  <div>
-    <input type="submit" value="Publish snippet" />
+  <div class="field">
+    <label class="label">Forcast Days</label>
+    <div class="control">
+      <input class="input" name="forcast_days" type="number" placeholder="3" />
+    </div>
+  </div>
+  <div class="control">
+    <label class="radio">
+      <input type="radio" name="crypto" value="bitcoin" />
+      Bitcoin
+    </label>
+    <label class="radio">
+      <input type="radio" name="crypto" value="ethereum" />
+      Ethereum
+    </label>
+    <label class="radio">
+      <input type="radio" name="crypto" value="solana" />
+      Solana
+    </label>
+  </div>
+  <div class="field">
+    <label class="label">First Layer Unit</label>
+    <div class="control">
+      <input class="input" name="first_layer" type="number" placeholder="3" />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Second Layer Unit</label>
+    <div class="control">
+      <input class="input" name="second_layer" type="number" placeholder="3" />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Third Layer Unit</label>
+    <div class="control">
+      <input class="input" name="third_layer" type="number" placeholder="3" />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Learning Rate</label>
+    <div class="control">
+      <input class="input" name="learning_rate" type="number" placeholder="0.9" step="0.1" />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Epoch</label>
+    <div class="control">
+      <input class="input" name="epoch" type="number" placeholder="3" />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Batch Size</label>
+    <div class="control">
+      <input class="input" name="batch_size" type="number" placeholder="3" />
+    </div>
+  </div>
+
+  <!-- ---------------------------------------------- -->
+
+  <span id="error" style="color: red"></span>
+  <br />
+  <span>indexa</span>
+  <input
+    type="checkbox"
+    class="checkbox"
+    name="index"
+    onclick="checkboxControl(0)"
+    value="indexa"
+  />
+  <br />
+  <span>indexb</span>
+  <input
+    type="checkbox"
+    class="checkbox"
+    name="index"
+    onclick="checkboxControl(1)"
+    id="1"
+    value="indexb"
+  /><br />
+  <span>indexc</span>
+  <input
+    type="checkbox"
+    class="checkbox"
+    name="index"
+    onclick="checkboxControl(2)"
+    id="1"
+    value="indexc"
+  /><br />
+  <span>indexd</span>
+  <input
+    type="checkbox"
+    class="checkbox"
+    name="index"
+    onclick="checkboxControl(3)"
+    id="1"
+    value="indexd"
+  />
+
+  <!-- ---------------------------------------------------------- -->
+  <div class="field is-grouped">
+    <div class="control">
+      <button class="button is-link" type="submit">Submit</button>
+    </div>
+    <div class="control">
+      <button class="button is-link is-light">Cancel</button>
+    </div>
   </div>
 </form>
 {{end}}

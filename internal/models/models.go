@@ -31,15 +31,16 @@ type ModelModel struct {
 
 // This will insert a new snippet into the database.
 
-func (m *ModelModel) Insert(name string, belongs_to int, ratio_of_train float32, look_back int, forecast_days int, crypto string, first_layer int, second_layer int, third_layer int, first_index string, second_index string, third_index string, learning_rate float32, epoch int, batch_size int, modelerr float32) error {
-	stmt := "INSERT INTO model (modelname,belongs_to,ratio_of_train,look_back,forecast_days,crypto,first_layer,second_layer,third_layer,first_index,second_index,third_index,learning_rate,epoch,batch_size,modelerr) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16);"
+func (m *ModelModel) Insert(name string, belongs_to int, ratio_of_train float32, look_back int, forecast_days int, crypto string, first_layer int, second_layer int, third_layer int, first_index string, second_index string, third_index string, learning_rate float32, epoch int, batch_size int, modelerr float32) (int, error) {
+	stmt := "INSERT INTO model (modelname,belongs_to,ratio_of_train,look_back,forecast_days,crypto,first_layer,second_layer,third_layer,first_index,second_index,third_index,learning_rate,epoch,batch_size,modelerr) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16) RETURNING id"
 
-	_, err := m.DB.Exec(stmt, name, belongs_to, ratio_of_train, look_back, forecast_days, crypto, first_layer, second_layer, third_layer, first_index, second_index, third_index, learning_rate, epoch, batch_size, modelerr)
+	var lastInsertId int
+	err := m.DB.QueryRow(stmt, name, belongs_to, ratio_of_train, look_back, forecast_days, crypto, first_layer, second_layer, third_layer, first_index, second_index, third_index, learning_rate, epoch, batch_size, modelerr).Scan(&lastInsertId)
 	if err != nil {
-		return err
+		return -1, err
 	}
 
-	return err
+	return lastInsertId, err
 }
 
 //This will return a specific snippet based on its id.

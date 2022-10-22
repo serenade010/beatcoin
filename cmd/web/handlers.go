@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -49,14 +50,83 @@ func (app *application) modelCreateModel(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err = app.models.Insert("l'amour", 2, 0.8, 1, 1, "BTC", 33, 33, 33, "q", "w", "e", 0.9, 30, 30, 333)
+	name := r.PostForm.Get("name")
+	crypto := r.PostForm.Get("crypto")
+
+	//Parse every column in the form
+	ratio_of_train, err := strconv.ParseFloat(r.PostForm.Get("ratio_of_train"), 32)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	look_back, err := strconv.Atoi(r.PostForm.Get("look_back"))
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	forcast_days, err := strconv.Atoi(r.PostForm.Get("forcast_days"))
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+	first_layer, err := strconv.Atoi(r.PostForm.Get("first_layer"))
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+	second_layer, err := strconv.Atoi(r.PostForm.Get("second_layer"))
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	third_layer, err := strconv.Atoi(r.PostForm.Get("third_layer"))
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	epoch, err := strconv.Atoi(r.PostForm.Get("epoch"))
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	learning_rate, err := strconv.ParseFloat(r.PostForm.Get("learning_rate"), 32)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	batch_size, err := strconv.Atoi(r.PostForm.Get("batch_size"))
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	var index_one, index_two, index_three string
+	for i, item := range r.PostForm["index"] {
+		switch i {
+		case 0:
+			index_one = item
+		case 1:
+			index_two = item
+		case 2:
+			index_three = item
+		}
+
+	}
+
+	//Insert all column data into DB
+	lastid, err := app.models.Insert(name, 2, float32(ratio_of_train), look_back, forcast_days, crypto, first_layer, second_layer, third_layer, index_one, index_two, index_three, float32(learning_rate), epoch, batch_size, 333)
 	if err != nil {
 		app.serverError(w, err)
 		return
 	}
 
-	//TODO: FIX this route
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/model/view/%d", lastid), http.StatusSeeOther)
 }
 
 func (app *application) modelView(w http.ResponseWriter, r *http.Request) {
