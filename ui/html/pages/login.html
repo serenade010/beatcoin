@@ -7,28 +7,37 @@
 >
   <p class="title">Start building your own models</p>
   <div class="column is-half">
-    <form class="box is-flex is-flex-direction-column">
+    <form
+      class="box is-flex is-flex-direction-column"
+      action="/user/login"
+      method="POST"
+      novalidate
+    >
       <div class="block"></div>
-
+      {{range .Form.NonFieldErrors}}
+      <div class="error">{{.}}</div>
+      {{end}}
       <div class="field">
+        {{with .Form.FieldErrors.email}}
+        <label class="error">{{.}}</label>
+        {{end}}
         <label class="label">Email</label>
         <div class="control">
-          <input
-            class="input"
-            type="email"
-            placeholder="e.g. alex@example.com"
-          />
+          <input class="input" type="email" name="email" />
         </div>
       </div>
       <div class="block"></div>
       <div class="field">
+        {{with .Form.FieldErrors.password}}
+        <label class="error">{{.}}</label>
+        {{end}}
         <label class="label">Password</label>
         <div class="control">
-          <input class="input" type="password" placeholder="********" />
+          <input class="input" type="password" name="password" />
         </div>
       </div>
       <div class="block"></div>
-      <button class="button is-warning">Log in</button>
+      <button class="button is-warning" type="submit">Log in</button>
       <div class="block"></div>
     </form>
   </div>

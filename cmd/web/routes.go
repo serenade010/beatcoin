@@ -20,14 +20,21 @@ func (app *application) routes() http.Handler {
 	// Create middleware for loading and saving sessions for dynamic routes
 	dynamic := alice.New(app.sessionManager.LoadAndSave)
 
+	// Unprotected
 	router.Handler(http.MethodGet, "/", dynamic.ThenFunc(app.home))
 	router.Handler(http.MethodGet, "/model/rank", dynamic.ThenFunc(app.modelRank))
+	router.Handler(http.MethodGet, "/model/play", dynamic.ThenFunc(app.modelPlay))
 	router.Handler(http.MethodGet, "/user/signup", dynamic.ThenFunc(app.userSignup))
 	router.Handler(http.MethodGet, "/user/login", dynamic.ThenFunc(app.userLogin))
-	router.Handler(http.MethodGet, "/model/view/:id", dynamic.ThenFunc(app.modelView))
-	router.Handler(http.MethodGet, "/model/play", dynamic.ThenFunc(app.modelPlay))
-	router.Handler(http.MethodGet, "/model/create", dynamic.ThenFunc(app.modelCreate))
-	router.Handler(http.MethodPost, "/model/create", dynamic.ThenFunc(app.modelCreateModel))
+	router.Handler(http.MethodPost, "/user/signup", dynamic.ThenFunc(app.userSignupPost))
+	router.Handler(http.MethodPost, "/user/login", dynamic.ThenFunc(app.userLoginPost))
+
+	// Model Related Route
+	protected := dynamic.Append(app.requireAuthentication)
+	router.Handler(http.MethodGet, "/model/view/:id", protected.ThenFunc(app.modelView))
+	router.Handler(http.MethodGet, "/model/create", protected.ThenFunc(app.modelCreate))
+	router.Handler(http.MethodPost, "/model/create", protected.ThenFunc(app.modelCreatePost))
+	router.Handler(http.MethodPost, "/user/logout", protected.ThenFunc(app.userLogoutPost))
 
 	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 

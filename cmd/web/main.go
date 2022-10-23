@@ -12,6 +12,7 @@ import (
 
 	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/v2"
+	"github.com/go-playground/form/v4"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/serenade010/beatcoin/internal/models"
@@ -21,8 +22,10 @@ type application struct {
 	errorLog       *log.Logger
 	infoLog        *log.Logger
 	models         *models.ModelModel
+	users          *models.UserModel
 	templateCache  map[string]*template.Template
 	sessionManager *scs.SessionManager
+	formDecoder    *form.Decoder
 }
 
 func main() {
@@ -54,6 +57,8 @@ func main() {
 		errorlog.Fatal(err)
 	}
 
+	formDecoder := form.NewDecoder()
+
 	sessionManager := scs.New()
 	sessionManager.Store = postgresstore.New(db)
 	sessionManager.Lifetime = 12 * time.Hour
@@ -63,8 +68,10 @@ func main() {
 		errorLog:       errorlog,
 		infoLog:        infoLog,
 		models:         &models.ModelModel{DB: db},
+		users:          &models.UserModel{DB: db},
 		templateCache:  templateCache,
 		sessionManager: sessionManager,
+		formDecoder:    formDecoder,
 	}
 
 	// Create non-default TLS settings.
@@ -74,10 +81,13 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Addr:      *addr,
-		ErrorLog:  errorlog,
-		Handler:   app.routes(),
-		TLSConfig: tlsConfig,
+		Addr:         *addr,
+		ErrorLog:     errorlog,
+		Handler:      app.routes(),
+		TLSConfig:    tlsConfig,
+		IdleTimeout:  time.Minute,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	infoLog.Printf("Starting server on %s", *addr)

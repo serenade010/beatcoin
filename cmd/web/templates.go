@@ -2,19 +2,18 @@ package main
 
 import (
 	"html/template"
-	"net/http"
 	"path/filepath"
-	"time"
 
 	"github.com/serenade010/beatcoin/internal/models"
 )
 
 type templateData struct {
-	CurrentYear int
-	Model       *models.Model
-	Models      []*models.Model
-	Form        any
-	Flash       string
+	CurrentYear     int
+	Model           *models.Model
+	Models          []*models.Model
+	Form            any
+	Flash           string
+	IsAuthenticated bool
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {
@@ -45,11 +44,4 @@ func newTemplateCache() (map[string]*template.Template, error) {
 
 	return cache, nil
 
-}
-
-func (app *application) newTemplateData(r *http.Request) *templateData {
-	return &templateData{
-		CurrentYear: time.Now().Year(),
-		Flash:       app.sessionManager.PopString(r.Context(), "flash"),
-	}
 }
