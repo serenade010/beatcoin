@@ -7,7 +7,7 @@ function checkboxControl(j) {
       total = total + 1;
     }
     if (total > 3) {
-      error.textContent = 'You Must Select at Least 3';
+      error.textContent = 'You Must Select at Most 3 index';
       elem[j].checked = false;
       return false;
     }

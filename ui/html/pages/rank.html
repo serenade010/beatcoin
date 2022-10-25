@@ -1,13 +1,27 @@
-{{define "title"}}Rank{{end}} {{define "main"}}
-<h2>Top Snippets</h2>
-{{if .Models}}
-<table>
-  {{range .Models}}
-  <tr>
-    <td><a href="/model/view/{{.Id}}">{{.Name}}</a></td>
-  </tr>
-  {{end}}
-</table>
-{{else}}
+{{define "title"}}Rank{{end}} {{define "main"}} {{if .RankModels}} {{$match := .UseridMatch}}
+{{range $i, $e :=.RankModels}}
+<div class="block"></div>
+<div class="block"></div>
+<div class="container mt-6 mb-6">
+  <div class="columns has-background-white-ter is-flex is-align-items-center">
+    <div class="column"><h1 class="title"># &nbsp{{inc $i}}</h1></div>
+    <div class="column">
+      <h4 class="title is-4">{{.Name}}</h4>
+    </div>
+    <div class="column">
+      <h6 class="title is-6">owned by: {{index $match .Belongs_to}}</h6>
+    </div>
+    <div class="column"><span class="tag is-primary is-light">{{.Crypto}}</span></div>
+    <div class="column"><span class="tag is-warning is-light">{{.First_index.String}}</span></div>
+    <div class="column"><span class="tag is-warning is-light">{{.Second_index.String}}</span></div>
+    <div class="column"><span class="tag is-warning is-light">{{.Third_index.String}}</span></div>
+    <div class="column">
+      <span class="tag is-danger is-light">ERROR:&nbsp{{.Modelerr.Float64}}</span>
+    </div>
+  </div>
+</div>
+<div class="block"></div>
+<div class="block"></div>
+{{end}} {{else}}
 <p>There's nothing to see here... yet!</p>
 {{end}} {{end}}

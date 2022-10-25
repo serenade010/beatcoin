@@ -5,133 +5,181 @@
 </head>
 
 <form action="/model/create" method="POST">
-  <div class="field">
-    <label class="label">Name</label>
-    {{with .Form.FieldErrors.name}}
-    <p class="error">ERROR MESSAGE HERE:{{.}}</p>
-    {{end}}
-    <div class="control">
-      <input class="input" name="name" type="text" placeholder="Name" value="{{.Form.Name}}" />
+  <div class="column is-flex is-align-items-center is-flex-direction-column">
+    <div class="column is-four-fifths">
+      <label class="label">Name</label>
+      {{with .Form.FieldErrors.name}}
+      <p class="error">ERROR MESSAGE HERE:{{.}}</p>
+      {{end}}
+      <div class="control">
+        <input class="input" name="name" type="text" placeholder="Name" value="{{.Form.Name}}" />
+      </div>
     </div>
-  </div>
+    <div class="column is-four-fifths is-flex">
+      <div class="column"><label class="label">Crypto</label></div>
+      <div class="column">
+        <label class="radio">
+          <input type="radio" name="crypto" value="bitcoin" />
+          Bitcoin
+        </label>
+      </div>
+      <div class="column">
+        <label class="radio">
+          <input type="radio" name="crypto" value="ethereum" />
+          Ethereum
+        </label>
+      </div>
+      <div class="column">
+        <label class="radio">
+          <input type="radio" name="crypto" value="solana" />
+          Solana
+        </label>
+      </div>
+    </div>
+    <div class="column is-four-fifths is-flex is-justify-content-start">
+      <div class="column">
+        <label class="label">Index</label>
+      </div>
+      <div class="column">
+        <input
+          type="checkbox"
+          class="checkbox"
+          name="index"
+          onclick="checkboxControl(0)"
+          value="DEMA"
+        />
+        <span>DEMA</span>
+      </div>
+      <div class="column">
+        <input
+          type="checkbox"
+          class="checkbox"
+          name="index"
+          onclick="checkboxControl(1)"
+          id="1"
+          value="EMA"
+        />
+        <span>EMA</span>
+      </div>
+      <div class="column">
+        <input
+          type="checkbox"
+          class="checkbox"
+          name="index"
+          onclick="checkboxControl(2)"
+          id="1"
+          value="KAMA"
+        />
+        <span>KAMA</span>
+      </div>
+      <div class="column">
+        <input
+          type="checkbox"
+          class="checkbox"
+          name="index"
+          onclick="checkboxControl(3)"
+          id="1"
+          value="SAR"
+        />
+        <span>SAR</span>
+      </div>
+      <div class="column">
+        <input
+          type="checkbox"
+          class="checkbox"
+          name="index"
+          onclick="checkboxControl(4)"
+          id="1"
+          value="CCI"
+        />
+        <span>CCI</span>
+      </div>
+      <div class="column">
+        <input
+          type="checkbox"
+          class="checkbox"
+          name="index"
+          onclick="checkboxControl(5)"
+          id="1"
+          value="ADX"
+        />
+        <span>ADX</span>
+      </div>
+    </div>
+    <div class="column is-four-fifths is-flex">
+      <div class="column">
+        <label class="label">Ratio of Train Data</label>
+        <div class="control">
+          <input class="input" name="ratio_of_train" type="number" placeholder="0.8" step="0.1" />
+        </div>
+      </div>
 
-  <div class="field">
-    <label class="label">Ratio of Train Data</label>
-    <div class="control">
-      <input class="input" name="ratio_of_train" type="number" placeholder="0.8" step="0.1" />
+      <div class="column">
+        <label class="label">Look Back Days</label>
+        <div class="control">
+          <input class="input" name="look_back" type="number" placeholder="5" />
+        </div>
+      </div>
+      <div class="column">
+        <label class="label">Forcast Days</label>
+        <div class="control">
+          <input class="input" name="forcast_days" type="number" placeholder="3" />
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="field">
-    <label class="label">Look Back Days</label>
-    <div class="control">
-      <input class="input" name="look_back" type="number" placeholder="5" />
+    <div class="column is-four-fifths is-flex">
+      <div class="column">
+        <label class="label">First Layer Unit</label>
+        <div class="control">
+          <input class="input" name="first_layer" type="number" placeholder="3" />
+        </div>
+      </div>
+      <div class="column">
+        <label class="label">Second Layer Unit</label>
+        <div class="control">
+          <input class="input" name="second_layer" type="number" placeholder="3" />
+        </div>
+      </div>
+      <div class="column">
+        <label class="label">Third Layer Unit</label>
+        <div class="control">
+          <input class="input" name="third_layer" type="number" placeholder="3" />
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="field">
-    <label class="label">Forcast Days</label>
-    <div class="control">
-      <input class="input" name="forcast_days" type="number" placeholder="3" />
+    <div class="column is-four-fifths is-flex">
+      <div class="column">
+        <label class="label">Learning Rate</label>
+        <div class="control">
+          <input class="input" name="learning_rate" type="number" placeholder="0.9" step="0.1" />
+        </div>
+      </div>
+      <div class="column">
+        <label class="label">Epoch</label>
+        <div class="control">
+          <input class="input" name="epoch" type="number" placeholder="3" />
+        </div>
+      </div>
+      <div class="column">
+        <label class="label">Batch Size</label>
+        <div class="control">
+          <input class="input" name="batch_size" type="number" placeholder="3" />
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="control">
-    <label class="radio">
-      <input type="radio" name="crypto" value="bitcoin" />
-      Bitcoin
-    </label>
-    <label class="radio">
-      <input type="radio" name="crypto" value="ethereum" />
-      Ethereum
-    </label>
-    <label class="radio">
-      <input type="radio" name="crypto" value="solana" />
-      Solana
-    </label>
-  </div>
-  <div class="field">
-    <label class="label">First Layer Unit</label>
-    <div class="control">
-      <input class="input" name="first_layer" type="number" placeholder="3" />
-    </div>
-  </div>
-  <div class="field">
-    <label class="label">Second Layer Unit</label>
-    <div class="control">
-      <input class="input" name="second_layer" type="number" placeholder="3" />
-    </div>
-  </div>
-  <div class="field">
-    <label class="label">Third Layer Unit</label>
-    <div class="control">
-      <input class="input" name="third_layer" type="number" placeholder="3" />
-    </div>
-  </div>
-  <div class="field">
-    <label class="label">Learning Rate</label>
-    <div class="control">
-      <input class="input" name="learning_rate" type="number" placeholder="0.9" step="0.1" />
-    </div>
-  </div>
-  <div class="field">
-    <label class="label">Epoch</label>
-    <div class="control">
-      <input class="input" name="epoch" type="number" placeholder="3" />
-    </div>
-  </div>
-  <div class="field">
-    <label class="label">Batch Size</label>
-    <div class="control">
-      <input class="input" name="batch_size" type="number" placeholder="3" />
-    </div>
-  </div>
 
-  <!-- ---------------------------------------------- -->
+    <!-- ---------------------------------------------- -->
 
-  <span id="error" style="color: red"></span>
-  <br />
-  <span>indexa</span>
-  <input
-    type="checkbox"
-    class="checkbox"
-    name="index"
-    onclick="checkboxControl(0)"
-    value="indexa"
-  />
-  <br />
-  <span>indexb</span>
-  <input
-    type="checkbox"
-    class="checkbox"
-    name="index"
-    onclick="checkboxControl(1)"
-    id="1"
-    value="indexb"
-  /><br />
-  <span>indexc</span>
-  <input
-    type="checkbox"
-    class="checkbox"
-    name="index"
-    onclick="checkboxControl(2)"
-    id="1"
-    value="indexc"
-  /><br />
-  <span>indexd</span>
-  <input
-    type="checkbox"
-    class="checkbox"
-    name="index"
-    onclick="checkboxControl(3)"
-    id="1"
-    value="indexd"
-  />
+    <span id="error" style="color: red; position: absolute"></span>
 
-  <!-- ---------------------------------------------------------- -->
-  <div class="field is-grouped">
-    <div class="control">
-      <button class="button is-link" type="submit">Submit</button>
-    </div>
-    <div class="control">
-      <button class="button is-link is-light">Cancel</button>
+    <!-- ---------------------------------------------------------- -->
+    <div class="field is-grouped">
+      <div class="control">
+        <button class="button is-link" type="submit">Submit</button>
+      </div>
+      <div class="control">
+        <a class="button is-link is-light" href="/">Cancel</a>
+      </div>
     </div>
   </div>
 </form>

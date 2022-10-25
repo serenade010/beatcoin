@@ -31,6 +31,7 @@ func (app *application) routes() http.Handler {
 
 	// Model Related Route
 	protected := dynamic.Append(app.requireAuthentication)
+	router.Handler(http.MethodGet, "/model/mymodel", protected.ThenFunc(app.myModelsView))
 	router.Handler(http.MethodGet, "/model/view/:id", protected.ThenFunc(app.modelView))
 	router.Handler(http.MethodGet, "/model/create", protected.ThenFunc(app.modelCreate))
 	router.Handler(http.MethodPost, "/model/create", protected.ThenFunc(app.modelCreatePost))

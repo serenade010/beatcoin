@@ -14,6 +14,7 @@ import (
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
+	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
 	app.render(w, http.StatusOK, "home.html", data)
 }
 
@@ -23,12 +24,36 @@ func (app *application) modelRank(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 		return
 	}
+	idMapping := make(map[int]string, 10)
+	for _, model := range models {
+		user := app.users.UserInfo(model.Belongs_to)
+		idMapping[model.Belongs_to] = user.Name
+	}
 
-	app.render(w, http.StatusOK, "rank.html", &templateData{Models: models})
+	data := app.newTemplateData(r)
+	data.RankModels = models
+	data.UseridMatch = idMapping
+	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
+	fmt.Println(data.UseridMatch)
+	app.render(w, http.StatusOK, "rank.html", data)
+}
+
+func (app *application) myModelsView(w http.ResponseWriter, r *http.Request) {
+	models, err := app.models.MyModels(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	data := app.newTemplateData(r)
+	data.MyModels = models
+	fmt.Println(data.MyModels)
+	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
+	app.render(w, http.StatusOK, "mymodel.html", data)
 }
 
 func (app *application) modelPlay(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
+	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
 	app.render(w, http.StatusOK, "play.html", data)
 }
 
@@ -108,7 +133,6 @@ func (app *application) userLoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(len(form.Email))
 	form.CheckField(validator.NotBlank(form.Email), "email", "This field cannot be blank")
 	form.CheckField(validator.Matches(form.Email, validator.EmailRX), "email", "This field must be a valid email address")
 	form.CheckField(validator.NotBlank(form.Password), "password", "This field cannot be blank")
@@ -162,6 +186,7 @@ func (app *application) userLogoutPost(w http.ResponseWriter, r *http.Request) {
 func (app *application) modelCreate(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Form = modelCreateForm{}
+	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
 	app.render(w, http.StatusOK, "create.html", data)
 }
 
@@ -223,7 +248,7 @@ func (app *application) modelCreatePost(w http.ResponseWriter, r *http.Request) 
 	}
 
 	//Insert all column data into DB
-	lastid, err := app.models.Insert(form.Name, 2, form.Ratio_of_train, form.Look_back, form.Forecast_days, form.Crypto, form.First_layer, form.Second_layer, form.Third_layer, index_one, index_two, index_three, form.Learning_rate, form.Epoch, form.Batch_size, 333)
+	lastid, err := app.models.Insert(form.Name, app.sessionManager.GetInt(r.Context(), "authenticatedUserID"), form.Ratio_of_train, form.Look_back, form.Forecast_days, form.Crypto, form.First_layer, form.Second_layer, form.Third_layer, index_one, index_two, index_three, form.Learning_rate, form.Epoch, form.Batch_size, 333)
 	if err != nil {
 		app.serverError(w, err)
 		return
@@ -256,4 +281,8 @@ func (app *application) modelView(w http.ResponseWriter, r *http.Request) {
 	data.Model = model
 
 	app.render(w, http.StatusOK, "view.html", data)
+}
+
+func myModelsView(w http.ResponseWriter, r *http.Request) {
+
 }

@@ -13,7 +13,23 @@
     {{template "nav".}}
     <main>
       {{with .Flash}}
-      <div class="flash">{{.}}</div>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            const $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+              $notification.parentNode.removeChild($notification);
+            });
+          });
+        });
+      </script>
+      <div class="container is-flex is-justify-content-center">
+        <div class="notification is-primary" style="position: absolute">
+          <button class="delete"></button>
+          {{.}}
+        </div>
+      </div>
       {{end}} {{template "main" .}}
     </main>
   </body>

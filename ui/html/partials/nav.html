@@ -24,6 +24,7 @@
       <a class="navbar-item" href="/model/rank"> Rank </a>
       {{if .IsAuthenticated}}
       <a class="navbar-item" href="/model/create">Create</a>
+      <a class="navbar-item" href="/model/mymodel">My Model</a>
       {{end}}
       <a class="navbar-item"> Documentation </a>
     </div>
@@ -37,9 +38,11 @@
           </a>
 
           <a class="button is-light" href="/user/login"> Log in </a>
-          {{else}}
+          {{else}} {{with .User}}
+          <span class="tag is-info is-light is-medium mr-4">Hello {{.Name}} !</span>
+          {{end}}
           <form action="/user/logout" method="POST">
-            <button>Logout</button>
+            <button class="button is-warning">Log out</button>
             {{end}}
           </form>
         </div>

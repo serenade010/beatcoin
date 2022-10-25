@@ -73,3 +73,15 @@ func (m *UserModel) Authenticate(email, password string) (int, error) {
 func (m *UserModel) Exists(id int) (bool, error) {
 	return false, nil
 }
+
+func (m *UserModel) UserInfo(id int) *User {
+	stmt := "SELECT username,email,created FROM users WHERE id=$1"
+	row := m.DB.QueryRow(stmt, id)
+
+	user := &User{}
+	err := row.Scan(&user.Name, &user.Email, &user.Created)
+	if err != nil {
+		return nil
+	}
+	return user
+}

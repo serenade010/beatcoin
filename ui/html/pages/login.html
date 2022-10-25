@@ -15,25 +15,41 @@
     >
       <div class="block"></div>
       {{range .Form.NonFieldErrors}}
-      <div class="error">{{.}}</div>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            const $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+              $notification.parentNode.removeChild($notification);
+            });
+          });
+        });
+      </script> 
+      <div class="container is-flex is-justify-content-center">
+        <div class="notification is-danger" style="position: absolute">
+          <button class="delete"></button>
+          {{.}}
+        </div>
+      </div>
       {{end}}
       <div class="field">
-        {{with .Form.FieldErrors.email}}
-        <label class="error">{{.}}</label>
-        {{end}}
         <label class="label">Email</label>
         <div class="control">
           <input class="input" type="email" name="email" />
+          {{with .Form.FieldErrors.email}}
+          <p class="help is-danger">{{.}}</p>
+          {{end}}
         </div>
       </div>
       <div class="block"></div>
       <div class="field">
-        {{with .Form.FieldErrors.password}}
-        <label class="error">{{.}}</label>
-        {{end}}
         <label class="label">Password</label>
         <div class="control">
           <input class="input" type="password" name="password" />
+          {{with .Form.FieldErrors.password}}
+          <p class="help is-danger">{{.}}</p>
+          {{end}}
         </div>
       </div>
       <div class="block"></div>

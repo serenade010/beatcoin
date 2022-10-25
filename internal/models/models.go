@@ -66,7 +66,7 @@ func (m *ModelModel) Get(id int) (*Model, error) {
 }
 
 func (m *ModelModel) Best() ([]*Model, error) {
-	stmt := "SELECT id,modelname,belongs_to,ratio_of_train,look_back,forecast_days,crypto,first_layer,second_layer,third_layer,first_index,second_index,third_index,learning_rate,epoch,batch_size,modelerr FROM model ORDER BY modelerr ASC LIMIT 10"
+	stmt := "SELECT id,modelname,belongs_to,ratio_of_train,look_back,forecast_days,crypto,first_layer,second_layer,third_layer,first_index,second_index,third_index,learning_rate,epoch,batch_size,modelerr FROM model ORDER BY modelerr ASC LIMIT 20"
 
 	rows, err := m.DB.Query(stmt)
 	if err != nil {
@@ -94,4 +94,50 @@ func (m *ModelModel) Best() ([]*Model, error) {
 	}
 
 	return models, nil
+}
+
+func (m *ModelModel) MyModels(id int) ([]*Model, error) {
+	stmt := "SELECT id,modelname,belongs_to,ratio_of_train,look_back,forecast_days,crypto,first_layer,second_layer,third_layer,first_index,second_index,third_index,learning_rate,epoch,batch_size,modelerr FROM model WHERE belongs_to=$1"
+
+	rows, err := m.DB.Query(stmt, id)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	models := []*Model{}
+
+	for rows.Next() {
+		model := &Model{}
+
+		err := rows.Scan(&model.Id, &model.Name, &model.Belongs_to, &model.Ratio_of_train, &model.Look_back, &model.Forecast_days, &model.Crypto, &model.First_layer, &model.Second_layer, &model.Third_layer, &model.First_index, &model.Second_index, &model.Third_index, &model.Learning_rate, &model.Epoch, &model.Batch_size, &model.Modelerr)
+
+		if err != nil {
+			return nil, err
+		}
+
+		models = append(models, model)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return models, nil
+}
+
+func (m *ModelModel) Belong(id int) (bool, error) {
+	stmt := "SELECT belongs_to FROM model WHERE id=$1"
+	row := m.DB.QueryRow(stmt, id)
+
+	var belongsID int
+	err := row.Scan(&belongsID)
+	if err != nil {
+		return false, err
+	} else if belongsID != id {
+		return false, nil
+	} else {
+		return true, nil
+	}
 }

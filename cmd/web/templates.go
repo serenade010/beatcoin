@@ -10,10 +10,21 @@ import (
 type templateData struct {
 	CurrentYear     int
 	Model           *models.Model
-	Models          []*models.Model
+	RankModels      []*models.Model
+	MyModels        []*models.Model
+	User            *models.User
 	Form            any
 	Flash           string
 	IsAuthenticated bool
+	UseridMatch     map[int]string
+}
+
+func inc(i int) int {
+	return i + 1
+}
+
+var functions = template.FuncMap{
+	"inc": inc,
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {
@@ -26,7 +37,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 
 	for _, page := range pages {
 		name := filepath.Base(page)
-		ts, err := template.ParseFiles("./ui/html/base.html")
+		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.html")
 		if err != nil {
 			return nil, err
 		}
