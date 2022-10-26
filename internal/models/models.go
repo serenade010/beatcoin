@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 )
 
 type Model struct {
@@ -127,17 +128,26 @@ func (m *ModelModel) MyModels(id int) ([]*Model, error) {
 	return models, nil
 }
 
-func (m *ModelModel) Belong(id int) (bool, error) {
+func (m *ModelModel) Belong(modelId int, userId int) bool {
 	stmt := "SELECT belongs_to FROM model WHERE id=$1"
-	row := m.DB.QueryRow(stmt, id)
+	row := m.DB.QueryRow(stmt, modelId)
 
 	var belongsID int
 	err := row.Scan(&belongsID)
 	if err != nil {
-		return false, err
-	} else if belongsID != id {
-		return false, nil
+		fmt.Println(belongsID)
+		fmt.Println(userId)
+
+		return false
+	} else if belongsID != userId {
+		fmt.Println(belongsID)
+		fmt.Println(userId)
+
+		return false
 	} else {
-		return true, nil
+		fmt.Println(belongsID)
+		fmt.Println(userId)
+
+		return true
 	}
 }

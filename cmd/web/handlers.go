@@ -276,6 +276,10 @@ func (app *application) modelView(w http.ResponseWriter, r *http.Request) {
 			app.serverError(w, err)
 		}
 	}
+	if !app.models.Belong(model.Id, app.sessionManager.GetInt(r.Context(), "authenticatedUserID")) {
+		app.notFound(w)
+		return
+	}
 
 	data := app.newTemplateData(r)
 	data.Model = model
@@ -283,6 +287,6 @@ func (app *application) modelView(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "view.html", data)
 }
 
-func myModelsView(w http.ResponseWriter, r *http.Request) {
+// func myModelsView(w http.ResponseWriter, r *http.Request) {
 
-}
+// }
