@@ -68,10 +68,52 @@ type userSignupForm struct {
 }
 
 func (app *application) modelTrain(w http.ResponseWriter, r *http.Request) {
+	models, err := app.models.MyModels(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
 	data := app.newTemplateData(r)
+	data.MyModels = models
 	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
 	app.render(w, http.StatusOK, "train.html", data)
 }
+
+// func (app *application) indicatorsValue(w http.ResponseWriter, r *http.Request) {
+
+// 	indicators := []string{"DEMA", "EMA", "KAMA"}
+// 	if indicators[1] == "" && indicators[2] == "" {
+// 		indicators = indicators[0:1]
+// 	}
+// 	if indicators[1] != "" && indicators[2] == "" {
+
+// 		indicators = indicators[0:2]
+// 	}
+
+// 	postBody, _ := json.Marshal(map[string]any{
+
+// 		"begin":   "2021-12-27",
+// 		"end":     "2022-07-28",
+// 		"feature": "eth-usd",
+// 		"index":   indicators,
+// 	})
+// 	responseBody := bytes.NewBuffer(postBody)
+// 	resp, err := http.Post("http://localhost:8000/index", "application/json", responseBody)
+// 	//Handle Error
+// 	if err != nil {
+// 		app.serverError(w, err)
+// 	}
+// 	defer resp.Body.Close()
+// 	//Read the response body
+// 	body, err := io.ReadAll(resp.Body)
+// 	if err != nil {
+// 		app.serverError(w, err)
+// 	}
+// 	sb := string(body)
+// 	fmt.Println(len(sb))
+// 	http.Redirect(w, r, "/model/train", http.StatusSeeOther)
+
+// }
 
 // type ModelTrainForm struct {
 // 	begin      string
@@ -117,7 +159,7 @@ func (app *application) modelTrainPost(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 	}
 	sb := string(body)
-	fmt.Println(sb)
+	fmt.Println(len(sb))
 
 	http.Redirect(w, r, "/model/result", http.StatusSeeOther)
 }

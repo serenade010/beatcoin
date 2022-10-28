@@ -1,10 +1,10 @@
 let x = [];
 let y = [];
 
-const fetchData = () => {
+const fetchData = (from = '1638244800', to = '1655524800') => {
   axios
     .get(
-      'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=1638244800&to=1655524800'
+      `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=${from}&to=${to}`
     )
     .then(function (response) {
       // handle success
@@ -29,18 +29,18 @@ const fetchData = () => {
     });
 };
 
-const drawPlot = () => {
-  var data = [
-    {
-      x: x,
-      y: y,
+// const drawPlot = () => {
+//   var data = [
+//     {
+//       x: x,
+//       y: y,
 
-      type: 'scatter',
-    },
-  ];
+//       type: 'scatter',
+//     },
+//   ];
 
-  Plotly.newPlot('myDiv', data);
-};
+//   Plotly.newPlot('myDiv', data);
+// };
 
 fetchData();
 
