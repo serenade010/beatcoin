@@ -3,7 +3,6 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 )
 
 type Model struct {
@@ -134,20 +133,9 @@ func (m *ModelModel) Belong(modelId int, userId int) bool {
 
 	var belongsID int
 	err := row.Scan(&belongsID)
-	if err != nil {
-		fmt.Println(belongsID)
-		fmt.Println(userId)
-
-		return false
-	} else if belongsID != userId {
-		fmt.Println(belongsID)
-		fmt.Println(userId)
-
+	if err != nil || belongsID != userId {
 		return false
 	} else {
-		fmt.Println(belongsID)
-		fmt.Println(userId)
-
 		return true
 	}
 }

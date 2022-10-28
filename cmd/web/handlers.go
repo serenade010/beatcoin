@@ -18,6 +18,12 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "home.html", data)
 }
 
+func (app *application) modelPlay(w http.ResponseWriter, r *http.Request) {
+	data := app.newTemplateData(r)
+	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
+	app.render(w, http.StatusOK, "play.html", data)
+}
+
 func (app *application) modelRank(w http.ResponseWriter, r *http.Request) {
 	models, err := app.models.Best()
 	if err != nil {
@@ -51,18 +57,25 @@ func (app *application) myModelsView(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "mymodel.html", data)
 }
 
-func (app *application) modelPlay(w http.ResponseWriter, r *http.Request) {
-	data := app.newTemplateData(r)
-	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
-	app.render(w, http.StatusOK, "play.html", data)
-}
-
 type userSignupForm struct {
 	Name                string `form:"name"`
 	Email               string `form:"email"`
 	Password            string `form:"password"`
 	validator.Validator `form:"-"`
 }
+
+func (app *application) modelTrain(w http.ResponseWriter, r *http.Request) {
+	data := app.newTemplateData(r)
+	app.render(w, http.StatusOK, "train.html", data)
+}
+
+func (app *application) modelTrainPost(w http.ResponseWriter, r *http.Request) {
+	// data := app.newTemplateData(r)
+	// app.render(w, http.StatusOK, "train.html", data)
+}
+
+
+
 
 func (app *application) userSignup(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)

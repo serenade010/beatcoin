@@ -20,11 +20,14 @@
 
   <div id="navbarBasicExample" class="navbar-menu">
     <div class="navbar-start">
+      {{if not .IsAuthenticated}}
       <a class="navbar-item" href="/model/play">Play</a>
+      {{end}}
       <a class="navbar-item" href="/model/rank"> Rank </a>
       {{if .IsAuthenticated}}
       <a class="navbar-item" href="/model/create">Create</a>
       <a class="navbar-item" href="/model/mymodel">My Model</a>
+      <a class="navbar-item" href="/model/train">Train</a>
       {{end}}
       <a class="navbar-item"> Documentation </a>
     </div>

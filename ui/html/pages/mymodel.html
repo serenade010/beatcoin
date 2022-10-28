@@ -1,5 +1,46 @@
-{{define "title"}}My Model{{end}} {{define "main"}} {{range $i, $e :=.MyModels}}
-<div class="column">
-  <h4 class="title is-4">{{.Name}}</h4>
+{{define "title"}}My Model{{end}} {{define "main"}}
+
+<div class="table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th><abbr title="modelname">Model Name</abbr></th>
+        <th><abbr title="Ratio_of_train">Train Ratio</abbr></th>
+        <th><abbr title="look_back">Look Back Days</abbr></th>
+        <th><abbr title="forecast_days">Forcast Days</abbr></th>
+        <th><abbr title="crypto">Crypto</abbr></th>
+        <th><abbr title="first_layer">First Layer </abbr></th>
+        <th><abbr title="second_layer">Second Layer </abbr></th>
+        <th><abbr title="third_layer">Third Layer </abbr></th>
+        <th><abbr title="first_index">Indicator 1</abbr></th>
+        <th><abbr title="second_index">Indicator 2</abbr></th>
+        <th><abbr title="third_index">Indicator 3</abbr></th>
+        <th><abbr title="modelerr"> Error</abbr></th>
+      </tr>
+    </thead>
+    {{range $i, $e :=.MyModels}}
+    <tbody>
+      <tr>
+        <td>
+          <a href="/model/view/{{.Id}}">
+            <strong>{{.Name}}</strong>
+          </a>
+        </td>
+        <td>{{.Ratio_of_train}}</td>
+        <td>{{.Look_back}}</td>
+        <td>{{.Forecast_days}}</td>
+        <td>{{.Crypto}}</td>
+        <td>{{.First_layer}}</td>
+        <td>{{.Second_layer.Int16}}</td>
+        <td>{{.Third_layer.Int16}}</td>
+        <td>{{.First_index.String}}</td>
+        <td>{{.Second_index.String}}</td>
+        <td>{{.Third_index.String}}</td>
+        <td>{{.Modelerr.Float64}}</td>
+      </tr>
+    </tbody>
+    {{end}}
+  </table>
 </div>
-{{end}} {{end}}
+
+{{end}}
