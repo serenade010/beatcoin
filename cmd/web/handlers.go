@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -66,16 +69,65 @@ type userSignupForm struct {
 
 func (app *application) modelTrain(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
+	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
 	app.render(w, http.StatusOK, "train.html", data)
 }
 
+// type ModelTrainForm struct {
+// 	begin      string
+// 	end        string
+// 	feature    string
+// 	timeperiod int
+// }
+
 func (app *application) modelTrainPost(w http.ResponseWriter, r *http.Request) {
-	// data := app.newTemplateData(r)
-	// app.render(w, http.StatusOK, "train.html", data)
+	//Encode the data
+	// postBody, _ := json.Marshal(ModelTrainForm{
+	// 	begin:      "2022-06-27",
+	// 	end:        "2022-07-28",
+	// 	feature:    "eth-usd",
+	// 	timeperiod: 5,
+	// })
+
+	// 	postBody:="{
+	//     "begin": "2022-06-27",
+	//     "end": "2022-07-28",
+	//     "feature": "eth-usd",
+	//     "timeperiod": 5
+	// }"
+	// responseBody := bytes.NewBuffer(postBody)
+
+	postBody, _ := json.Marshal(map[string]any{
+
+		"begin":      "2022-06-27",
+		"end":        "2022-07-28",
+		"feature":    "eth-usd",
+		"timeperiod": 5,
+	})
+	responseBody := bytes.NewBuffer(postBody)
+	resp, err := http.Post("http://localhost:8000/index/ma", "application/json", responseBody)
+	//Handle Error
+	if err != nil {
+		app.serverError(w, err)
+	}
+	defer resp.Body.Close()
+	//Read the response body
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		app.serverError(w, err)
+	}
+	sb := string(body)
+	fmt.Println(sb)
+
+	http.Redirect(w, r, "/model/result", http.StatusSeeOther)
 }
 
+func (app *application) modelTrainResult(w http.ResponseWriter, r *http.Request) {
+	data := app.newTemplateData(r)
+	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
+	app.render(w, http.StatusOK, "result.html", data)
 
-
+}
 
 func (app *application) userSignup(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
