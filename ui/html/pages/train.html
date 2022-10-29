@@ -10,6 +10,13 @@
   <script>
     let x = [];
     let y = [];
+    let x1 = [];
+    let y1 = [];
+    let x2 = [];
+    let y2 = [];
+    let x3 = [];
+    let y3 = [];
+    let indexarr = [];
 
     const convertToUnix = (datestr) => {
       const date = new Date(datestr);
@@ -40,23 +47,55 @@
         })
         .catch(function (error) {})
         .finally(function () {
-          console.log(x);
-          console.log(y);
+          x1 = [];
+          y1 = [];
+          x2 = [];
+          y2 = [];
+          x3 = [];
+          y3 = [];
           drawPlot();
         });
+    };
 
-      const drawPlot = () => {
-        var data = [
-          {
-            x: x,
-            y: y,
+    const drawPlot = () => {
+      var data = [
+        {
+          x: x,
+          y: y,
 
-            type: 'scatter',
-          },
-        ];
+          type: 'scatter',
+          name: 'price',
+        },
+        x1.length === 0
+          ? {}
+          : {
+              x: x1,
+              y: y1,
 
-        Plotly.newPlot('myDiv', data);
-      };
+              type: 'scatter',
+              name: indexarr[0],
+            },
+        x2.length === 0
+          ? {}
+          : {
+              x: x2,
+              y: y2,
+
+              type: 'scatter',
+              name: indexarr[1],
+            },
+        x3.length === 0
+          ? {}
+          : {
+              x: x3,
+              y: y3,
+
+              type: 'scatter',
+              name: indexarr[2],
+            },
+      ];
+
+      Plotly.newPlot('myDiv', data);
     };
 
     const fetchDate = () => {
@@ -70,7 +109,6 @@
     fetchDateData(false);
 
     let golangVar = [];
-    let indexarr = [];
     golangVar =
       '{{range $i, $e :=.MyModels}} {{.Name}} {{.First_index.String}} {{with .Second_index.String}} {{.}} {{else}} {{"null"}} {{end}}{{with .Third_index.String}} {{.}} {{else}} {{"null"}} {{end}} {{end}}';
     golangVar = golangVar.split(' ').filter((item) => item !== '');
@@ -83,13 +121,15 @@
 
       let modelpos = golangVar.indexOf(e.value);
       indexarr = [golangVar[modelpos + 1], golangVar[modelpos + 2], golangVar[modelpos + 3]];
+
+      for (var i = 0; i < indexarr.length; i++) {
+        if (indexarr[i] === 'null') {
+          indexarr.splice(i, 1);
+          i--;
+        }
+      }
+
       console.log(indexarr);
-
-      // const dateStr = '2022-06-22';
-      // const date = new Date(dateStr);
-      // const timestampInMs = date.getTime();
-      // const unixTimestamp = Math.floor(date.getTime() / 1000);
-
       axios
         .post('http://127.0.0.1:8080/index', {
           Begin: start,
@@ -98,10 +138,42 @@
           Index: indexarr,
         })
         .then(function (response) {
-          console.log(response);
+          x1 = response.data['index_data'][indexarr[0].toLowerCase()].map((price) => {
+            return moment(price[0]).format();
+          });
+          y1 = response.data['index_data'][indexarr[0].toLowerCase()].map((price) => {
+            return price[1];
+          });
+          if (indexarr.length === 2) {
+            x2 = response.data['index_data'][indexarr[1].toLowerCase()].map((price) => {
+              return moment(price[0]).format();
+            });
+            y2 = response.data['index_data'][indexarr[1].toLowerCase()].map((price) => {
+              return price[1];
+            });
+          }
+          if (indexarr.length === 3) {
+            x2 = response.data['index_data'][indexarr[1].toLowerCase()].map((price) => {
+              return moment(price[0]).format();
+            });
+            y2 = response.data['index_data'][indexarr[1].toLowerCase()].map((price) => {
+              return price[1];
+            });
+            x3 = response.data['index_data'][indexarr[2].toLowerCase()].map((price) => {
+              return moment(price[0]).format();
+            });
+            y3 = response.data['index_data'][indexarr[2].toLowerCase()].map((price) => {
+              return price[1];
+            });
+          }
         })
         .catch(function (error) {
           console.log(error);
+        })
+        .finally(function () {
+          console.log(x2);
+          console.log(y2);
+          drawPlot();
         });
     };
   </script>
