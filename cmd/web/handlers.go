@@ -60,13 +60,6 @@ func (app *application) myModelsView(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "mymodel.html", data)
 }
 
-type userSignupForm struct {
-	Name                string `form:"name"`
-	Email               string `form:"email"`
-	Password            string `form:"password"`
-	validator.Validator `form:"-"`
-}
-
 func (app *application) modelTrain(w http.ResponseWriter, r *http.Request) {
 	models, err := app.models.MyModels(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
 	if err != nil {
@@ -79,75 +72,82 @@ func (app *application) modelTrain(w http.ResponseWriter, r *http.Request) {
 	app.render(w, http.StatusOK, "train.html", data)
 }
 
-// func (app *application) indicatorsValue(w http.ResponseWriter, r *http.Request) {
+type modelTrainForm struct {
+	Begin string `form:"start"`
+	End   string `form:"end"`
+	Name  string `form:"model"`
+}
 
-// 	indicators := []string{"DEMA", "EMA", "KAMA"}
-// 	if indicators[1] == "" && indicators[2] == "" {
-// 		indicators = indicators[0:1]
-// 	}
-// 	if indicators[1] != "" && indicators[2] == "" {
-
-// 		indicators = indicators[0:2]
-// 	}
-
-// 	postBody, _ := json.Marshal(map[string]any{
-
-// 		"begin":   "2021-12-27",
-// 		"end":     "2022-07-28",
-// 		"feature": "eth-usd",
-// 		"index":   indicators,
-// 	})
-// 	responseBody := bytes.NewBuffer(postBody)
-// 	resp, err := http.Post("http://localhost:8000/index", "application/json", responseBody)
-// 	//Handle Error
-// 	if err != nil {
-// 		app.serverError(w, err)
-// 	}
-// 	defer resp.Body.Close()
-// 	//Read the response body
-// 	body, err := io.ReadAll(resp.Body)
-// 	if err != nil {
-// 		app.serverError(w, err)
-// 	}
-// 	sb := string(body)
-// 	fmt.Println(len(sb))
-// 	http.Redirect(w, r, "/model/train", http.StatusSeeOther)
-
-// }
-
-// type ModelTrainForm struct {
-// 	begin      string
-// 	end        string
-// 	feature    string
-// 	timeperiod int
-// }
+type modelTrainPost struct {
+	Begin            string
+	End              string
+	Ratio_of_train   float32
+	Forecast_days    int
+	Look_back        int
+	OHLC             string
+	Features         []string
+	Index_features   []string
+	Predicted_ticket string
+	Layers           []int
+	Learning_rate    float32
+	Epochs           int
+	Batch_size       int
+}
 
 func (app *application) modelTrainPost(w http.ResponseWriter, r *http.Request) {
+
+	var form modelTrainForm
+	selectModel := &models.Model{}
+	// Parse the form data into the userSignupForm struct.
+	err := app.decodePostForm(r, &form)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+	fmt.Println(form.Begin, form.End, form.Name)
+
+	models, err := app.models.MyModels(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	for _, model := range models {
+		if model.Name == form.Name {
+			selectModel = model
+			break
+		}
+	}
+	var layers []int
+	layers = append(layers, selectModel.First_layer)
+
+	if selectModel.Second_layer.Int16 != 0 && selectModel.Third_layer.Int16 != 0 {
+		layers = append(layers, int(selectModel.Second_layer.Int16))
+		layers = append(layers, int(selectModel.Third_layer.Int16))
+	} else if selectModel.Second_layer.Int16 != 0 || selectModel.Third_layer.Int16 != 0 {
+		layers = append(layers, int(selectModel.Second_layer.Int16))
+	}
+
 	//Encode the data
-	// postBody, _ := json.Marshal(ModelTrainForm{
-	// 	begin:      "2022-06-27",
-	// 	end:        "2022-07-28",
-	// 	feature:    "eth-usd",
-	// 	timeperiod: 5,
-	// })
-
-	// 	postBody:="{
-	//     "begin": "2022-06-27",
-	//     "end": "2022-07-28",
-	//     "feature": "eth-usd",
-	//     "timeperiod": 5
-	// }"
-	// responseBody := bytes.NewBuffer(postBody)
-
-	postBody, _ := json.Marshal(map[string]any{
-
-		"begin":      "2022-06-27",
-		"end":        "2022-07-28",
-		"feature":    "eth-usd",
-		"timeperiod": 5,
+	postBody, _ := json.Marshal(modelTrainPost{
+		Begin:            form.Begin,
+		End:              form.End,
+		Ratio_of_train:   selectModel.Ratio_of_train,
+		Look_back:        selectModel.Look_back,
+		Forecast_days:    selectModel.Forecast_days,
+		OHLC:             "Adj Close",
+		Features:         []string{"BTC-USD", "^DJI", "^GSPC"},
+		Index_features:   []string{selectModel.First_index.String, selectModel.Second_index.String, selectModel.Third_index.String},
+		Predicted_ticket: "BTC-USD",
+		Layers:           layers,
+		Learning_rate:    selectModel.Learning_rate,
+		Epochs:           selectModel.Epoch,
+		Batch_size:       selectModel.Batch_size,
 	})
+
 	responseBody := bytes.NewBuffer(postBody)
-	resp, err := http.Post("http://localhost:8000/index/ma", "application/json", responseBody)
+	fmt.Println(responseBody)
+	resp, err := http.Post("http://localhost:8080/predict", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
 		app.serverError(w, err)
@@ -159,7 +159,7 @@ func (app *application) modelTrainPost(w http.ResponseWriter, r *http.Request) {
 		app.serverError(w, err)
 	}
 	sb := string(body)
-	fmt.Println(len(sb))
+	fmt.Println(sb)
 
 	http.Redirect(w, r, "/model/result", http.StatusSeeOther)
 }
@@ -169,6 +169,13 @@ func (app *application) modelTrainResult(w http.ResponseWriter, r *http.Request)
 	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
 	app.render(w, http.StatusOK, "result.html", data)
 
+}
+
+type userSignupForm struct {
+	Name                string `form:"name"`
+	Email               string `form:"email"`
+	Password            string `form:"password"`
+	validator.Validator `form:"-"`
 }
 
 func (app *application) userSignup(w http.ResponseWriter, r *http.Request) {
@@ -393,7 +400,3 @@ func (app *application) modelView(w http.ResponseWriter, r *http.Request) {
 
 	app.render(w, http.StatusOK, "view.html", data)
 }
-
-// func myModelsView(w http.ResponseWriter, r *http.Request) {
-
-// }

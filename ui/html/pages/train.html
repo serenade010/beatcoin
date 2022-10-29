@@ -115,6 +115,12 @@
     console.log(golangVar);
 
     const fetchIndicator = () => {
+      x1 = [];
+      y1 = [];
+      x2 = [];
+      y2 = [];
+      x3 = [];
+      y3 = [];
       let e = document.getElementById('select_index');
       let start = document.getElementById('start').value;
       let end = document.getElementById('end').value;
@@ -180,79 +186,69 @@
 </head>
 
 <body>
-  <div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
-
-  <div class="tabs is-centered is-boxed is-medium is-fullwidth">
-    <ul>
-      <li class="is-active" id="step-one">
-        <a href="#" onclick="selectStep('one')"> Select Range</a>
-      </li>
-      <li id="step-two">
-        <a href="#" onclick="selectStep('two')"> Select Model</a>
-      </li>
-      <li id="step-three">
-        <a href="#" onclick="selectStep('three')"> Train</a>
-      </li>
-    </ul>
-  </div>
-  <section class="content step-one">
-    <label for="start">Start date:</label>
-
-    <input
-      class="input is-primary"
-      type="date"
-      id="start"
-      name="trip-start"
-      value="2022-01-22"
-      min="2018-01-01"
-      max="2022-09-31"
-    />
-    <label for="start">End date:</label>
-    <input
-      class="input is-primary"
-      type="date"
-      id="end"
-      name="trip-start"
-      value="2022-07-22"
-      min="2018-01-01"
-      max="2022-09-31"
-    />
-
-    <button class="button is-link" id="date-btn" onclick="fetchDateData(true)">Select</button>
-  </section>
-
-  <section class="content step-two is-hide">
-    <div class="select">
-      <select id="select_index">
-        {{range $i, $e :=.MyModels}}
-        <option value="{{.Name}}">{{.Name}}</option>
-        {{end}}
-      </select>
-      <button class="button is-link" id="index-btn" onclick="fetchIndicator()">Draw Plot</button>
+  <form action="/model/train" method="post">
+    <div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
+    <div class="tabs is-centered is-boxed is-medium is-fullwidth">
+      <ul>
+        <li class="is-active" id="step-one">
+          <a href="#" onclick="selectStep('one')"> Select Range</a>
+        </li>
+        <li id="step-two">
+          <a href="#" onclick="selectStep('two')"> Select Model</a>
+        </li>
+        <li id="step-three">
+          <a href="#" onclick="selectStep('three')"> Train</a>
+        </li>
+      </ul>
     </div>
-  </section>
+    <section class="content step-one">
+      <label for="start">Start date:</label>
 
-  <section class="content step-three is-hide">
-    <div class="control"></div>
+      <input
+        class="input is-primary"
+        type="date"
+        id="start"
+        name="start"
+        value="2022-01-22"
+        min="2018-01-01"
+        max="2022-09-31"
+      />
 
-    <form action="/model/train" method="post">
-      <div class="field">
-        <label class="label">Label</label>
-        <div class="control">
-          <input class="input" type="text" placeholder="Text input" />
-        </div>
-        <p class="help">This is a help text</p>
+      <label for="start">End date:</label>
+      <input
+        class="input is-primary"
+        type="date"
+        id="end"
+        name="end"
+        value="2022-07-22"
+        min="2018-01-01"
+        max="2022-09-31"
+      />
+      <button class="button is-link" id="date-btn" type="button" onclick="fetchDateData(true)">
+        Select
+      </button>
+    </section>
+
+    <section class="content step-two is-hide">
+      <div class="select">
+        <select id="select_index" name="model">
+          {{range $i, $e :=.MyModels}}
+          <option value="{{.Name}}">{{.Name}}</option>
+          {{end}}
+        </select>
+        <button class="button is-link" id="index-btn" type="button" onclick="fetchIndicator()">
+          Draw Plot
+        </button>
       </div>
-      <div class="field is-grouped">
-        <div class="control">
-          <button class="button is-link">Submit</button>
-        </div>
-        <div class="control">
-          <button class="button is-link is-light">Cancel</button>
-        </div>
+    </section>
+
+    <section class="content step-three is-hide">
+      <div class="control"></div>
+      <div class="control">
+        <button class="button is-link" type="submit">Train</button>
       </div>
-    </form>
-  </section>
+    </section>
+  </form>
 </body>
 
 {{end}}

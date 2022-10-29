@@ -8,9 +8,6 @@
   <div class="column is-flex is-align-items-center is-flex-direction-column">
     <div class="column is-four-fifths">
       <label class="label">Name</label>
-      {{with .Form.FieldErrors.name}}
-      <p class="error">ERROR MESSAGE HERE:{{.}}</p>
-      {{end}}
       <div class="control">
         <input class="input" name="name" type="text" placeholder="Name" value="{{.Form.Name}}" />
       </div>
