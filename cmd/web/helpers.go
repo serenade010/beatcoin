@@ -87,16 +87,20 @@ func (app *application) isAuthenticated(r *http.Request) bool {
 }
 
 type Response struct {
-	History struct { 
+	Begin   float64 `json:"begin"`
+	End     float64 `json:"end"`
+	History struct {
 		Loss                 []float64 `json:"loss"`
 		MeanSquaredError     []float64 `json:"mean_squared_error"`
 		RootMeanSquaredError []float64 `json:"root_mean_squared_error"`
 	} `json:"history"`
-	Mape             string      `json:"mape"`
-	Mse              float64     `json:"mse"`
-	PredictDataTest  [][]float64 `json:"predict_data_test"`
-	PredictDataTrain [][]float64 `json:"predict_data_train"`
-	Rmse             float64     `json:"rmse"`
+	Mape                  string    `json:"mape"`
+	Mse                   float64   `json:"mse"`
+	PredictDataTestPrice  []float64 `json:"predict_data_test_price"`
+	PredictDataTestTime   []int64   `json:"predict_data_test_time"`
+	PredictDataTrainPrice []float64 `json:"predict_data_train_price"`
+	PredictDataTrainTime  []int64   `json:"predict_data_train_time"`
+	Rmse                  float64   `json:"rmse"`
 }
 
 func (app *application) unmarshalResponse(responseStr []byte) Response {

@@ -1,1 +1,133 @@
-{{define "title"}}Train Result{{end}} {{define "main"}} {{.Result.Mape}}{{end}}
+{{define "title"}}Train Result{{end}} {{define "main"}}
+<head>
+  <script src="https://cdn.plot.ly/plotly-2.14.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+</head>
+
+<body>
+  {{.Model.Name}}
+  <div id="price"><!-- Plotly chart will be drawn inside this DIV --></div>
+  <div id="mse"><!-- Plotly chart will be drawn inside this DIV --></div>
+  <div id="rmse"><!-- Plotly chart will be drawn inside this DIV --></div>
+</body>
+<script>
+  let x = [];
+  let y = [];
+  let x1 = '{{.Result.PredictDataTrainTime}}';
+  let y1 = '{{.Result.PredictDataTrainPrice}}';
+  let x2 = '{{.Result.PredictDataTestTime}}';
+  let y2 = '{{.Result.PredictDataTestPrice}}';
+  x1 = x1.slice(1, -1).split(' ');
+  y1 = y1.slice(1, -1).split(' ');
+  x2 = x2.slice(1, -1).split(' ');
+  y2 = y2.slice(1, -1).split(' ');
+
+  x1 = x1.map((i) => {
+    return parseInt(i);
+  });
+  console.log(x1);
+
+  y1 = y1.map((i) => {
+    return parseFloat(i);
+  });
+  x2 = x2.map((i) => {
+    return parseInt(i);
+  });
+  console.log(x1);
+
+  y2 = y2.map((i) => {
+    return parseFloat(i);
+  });
+
+  console.log(y1);
+
+  const fetchDateData = () => {
+    let s = Math.floor('{{.Result.Begin}}');
+    let e = Math.floor('{{.Result.End}}');
+
+    apiString =
+      'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=' +
+      s +
+      '&to=' +
+      e;
+    axios
+      .get(apiString)
+      .then(function (response) {
+        x = response.data['prices'].map((price) => {
+          return moment(price[0]).format();
+        });
+        y = response.data['prices'].map((price) => {
+          return price[1];
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(function () {
+        drawPricePlot();
+      });
+  };
+
+  const drawPricePlot = () => {
+    var data = [
+      {
+        x: x,
+        y: y,
+
+        type: 'scatter',
+        name: 'Price',
+      },
+      {
+        x: x1,
+        y: y1,
+
+        type: 'scatter',
+        // name: 'Price',
+      },
+      {
+        x: x2,
+        y: y2,
+
+        type: 'scatter',
+        // name: 'Price',
+      },
+    ];
+    Plotly.newPlot('price', data);
+  };
+  fetchDateData();
+</script>
+<script>
+  let mse = '{{.Result.History.MeanSquaredError}}'.slice(1, -1).split(' ');
+  let rmse = '{{.Result.History.RootMeanSquaredError}}'.slice(1, -1).split(' ');
+  let epoch = '{{.Model.Epoch}}';
+  let epochArr = Array.from({ length: epoch }, (_, i) => i + 1);
+
+  const drawMSEPlot = () => {
+    var data = [
+      {
+        x: epochArr,
+        y: mse,
+
+        type: 'scatter',
+      },
+    ];
+    Plotly.newPlot('mse', data);
+  };
+
+  const drawRMSEPlot = () => {
+    var data = [
+      {
+        x: epochArr,
+        y: rmse,
+
+        type: 'scatter',
+      },
+    ];
+
+    Plotly.newPlot('rmse', data);
+  };
+  drawMSEPlot();
+  drawRMSEPlot();
+</script>
+{{end}}

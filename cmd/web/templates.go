@@ -24,6 +24,20 @@ func inc(i int) int {
 	return i + 1
 }
 
+// func splitTimeArray[v int | float64](arrs [][]v) []v {
+// 	var newarr []v
+
+// 	for _, arr := range arrs {
+// 		newarr = append(newarr, arr[0])
+// 	}
+
+// 	return newarr
+// }
+
+// func splitPRiceArray([][]float64) []int {
+
+// }
+
 var functions = template.FuncMap{
 	"inc": inc,
 }

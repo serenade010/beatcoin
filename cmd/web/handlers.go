@@ -16,6 +16,7 @@ import (
 )
 
 // Global Variable
+var TrainingModel models.Model
 var TrainingResult Response
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -100,7 +101,7 @@ type modelTrainPost struct {
 func (app *application) modelTrainPost(w http.ResponseWriter, r *http.Request) {
 
 	var form modelTrainForm
-	selectModel := &models.Model{}
+
 	// Parse the form data into the userSignupForm struct.
 	err := app.decodePostForm(r, &form)
 	if err != nil {
@@ -117,35 +118,35 @@ func (app *application) modelTrainPost(w http.ResponseWriter, r *http.Request) {
 
 	for _, model := range models {
 		if model.Name == form.Name {
-			selectModel = model
+			TrainingModel = *model
 			break
 		}
 	}
 	var layers []int
-	layers = append(layers, selectModel.First_layer)
+	layers = append(layers, TrainingModel.First_layer)
 
-	if selectModel.Second_layer.Int16 != 0 && selectModel.Third_layer.Int16 != 0 {
-		layers = append(layers, int(selectModel.Second_layer.Int16))
-		layers = append(layers, int(selectModel.Third_layer.Int16))
-	} else if selectModel.Second_layer.Int16 != 0 || selectModel.Third_layer.Int16 != 0 {
-		layers = append(layers, int(selectModel.Second_layer.Int16))
+	if TrainingModel.Second_layer.Int16 != 0 && TrainingModel.Third_layer.Int16 != 0 {
+		layers = append(layers, int(TrainingModel.Second_layer.Int16))
+		layers = append(layers, int(TrainingModel.Third_layer.Int16))
+	} else if TrainingModel.Second_layer.Int16 != 0 || TrainingModel.Third_layer.Int16 != 0 {
+		layers = append(layers, int(TrainingModel.Second_layer.Int16))
 	}
 
 	//Encode the data
 	postBody, _ := json.Marshal(modelTrainPost{
 		Begin:            form.Begin,
 		End:              form.End,
-		Ratio_of_train:   selectModel.Ratio_of_train,
-		Look_back:        selectModel.Look_back,
-		Forecast_days:    selectModel.Forecast_days,
+		Ratio_of_train:   TrainingModel.Ratio_of_train,
+		Look_back:        TrainingModel.Look_back,
+		Forecast_days:    TrainingModel.Forecast_days,
 		OHLC:             "Adj Close",
 		Features:         []string{"BTC-USD", "^DJI", "^GSPC"},
-		Index_features:   []string{selectModel.First_index.String, selectModel.Second_index.String, selectModel.Third_index.String},
+		Index_features:   []string{TrainingModel.First_index.String, TrainingModel.Second_index.String, TrainingModel.Third_index.String},
 		Predicted_ticket: "BTC-USD",
 		Layers:           layers,
-		Learning_rate:    selectModel.Learning_rate,
-		Epochs:           selectModel.Epoch,
-		Batch_size:       selectModel.Batch_size,
+		Learning_rate:    TrainingModel.Learning_rate,
+		Epochs:           TrainingModel.Epoch,
+		Batch_size:       TrainingModel.Batch_size,
 	})
 
 	responseBody := bytes.NewBuffer(postBody)
@@ -168,6 +169,8 @@ func (app *application) modelTrainPost(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) modelTrainResult(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
+
+	data.Model = &TrainingModel
 	data.Result = TrainingResult
 	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
 	app.render(w, http.StatusOK, "result.html", data)
@@ -370,9 +373,10 @@ func (app *application) modelCreatePost(w http.ResponseWriter, r *http.Request) 
 		app.serverError(w, err)
 		return
 	}
+	fmt.Println(lastid)
 	app.sessionManager.Put(r.Context(), "flash", "Model successfully created!")
 
-	http.Redirect(w, r, fmt.Sprintf("/model/view/%d", lastid), http.StatusSeeOther)
+	http.Redirect(w, r, "/model/mymodel/", http.StatusSeeOther)
 }
 
 func (app *application) modelView(w http.ResponseWriter, r *http.Request) {
