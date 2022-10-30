@@ -15,6 +15,9 @@ import (
 	"github.com/serenade010/beatcoin/internal/validator"
 )
 
+// Global Variable
+var TrainingResult Response
+
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
@@ -146,7 +149,6 @@ func (app *application) modelTrainPost(w http.ResponseWriter, r *http.Request) {
 	})
 
 	responseBody := bytes.NewBuffer(postBody)
-	fmt.Println(responseBody)
 	resp, err := http.Post("http://localhost:8080/predict", "application/json", responseBody)
 	//Handle Error
 	if err != nil {
@@ -158,14 +160,15 @@ func (app *application) modelTrainPost(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.serverError(w, err)
 	}
-	sb := string(body)
-	fmt.Println(sb)
+
+	TrainingResult = app.unmarshalResponse(body)
 
 	http.Redirect(w, r, "/model/result", http.StatusSeeOther)
 }
 
 func (app *application) modelTrainResult(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
+	data.Result = TrainingResult
 	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
 	app.render(w, http.StatusOK, "result.html", data)
 

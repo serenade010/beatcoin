@@ -17,6 +17,7 @@ type templateData struct {
 	Flash           string
 	IsAuthenticated bool
 	UseridMatch     map[int]string
+	Result          Response
 }
 
 func inc(i int) int {

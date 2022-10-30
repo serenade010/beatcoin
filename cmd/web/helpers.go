@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -83,4 +84,24 @@ func (app *application) decodePostForm(r *http.Request, dst any) error {
 
 func (app *application) isAuthenticated(r *http.Request) bool {
 	return app.sessionManager.Exists(r.Context(), "authenticatedUserID")
+}
+
+type Response struct {
+	History struct { 
+		Loss                 []float64 `json:"loss"`
+		MeanSquaredError     []float64 `json:"mean_squared_error"`
+		RootMeanSquaredError []float64 `json:"root_mean_squared_error"`
+	} `json:"history"`
+	Mape             string      `json:"mape"`
+	Mse              float64     `json:"mse"`
+	PredictDataTest  [][]float64 `json:"predict_data_test"`
+	PredictDataTrain [][]float64 `json:"predict_data_train"`
+	Rmse             float64     `json:"rmse"`
+}
+
+func (app *application) unmarshalResponse(responseStr []byte) Response {
+	var responseObject Response
+	json.Unmarshal(responseStr, &responseObject)
+	return responseObject
+
 }
