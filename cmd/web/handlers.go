@@ -163,6 +163,16 @@ func (app *application) modelTrainPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	TrainingResult = app.unmarshalResponse(body)
+	TrainingResult.Mape = TrainingResult.Mape[:len(TrainingResult.Mape)-1]
+	modelerr, err := strconv.ParseFloat(TrainingResult.Mape, 64)
+	if err != nil {
+		app.serverError(w, err)
+	}
+
+	err = app.models.UpdateMAPE(TrainingModel.Id, modelerr)
+	if err != nil {
+		app.serverError(w, err)
+	}
 
 	http.Redirect(w, r, "/model/result", http.StatusSeeOther)
 }
@@ -368,7 +378,7 @@ func (app *application) modelCreatePost(w http.ResponseWriter, r *http.Request) 
 	}
 
 	//Insert all column data into DB
-	lastid, err := app.models.Insert(form.Name, app.sessionManager.GetInt(r.Context(), "authenticatedUserID"), form.Ratio_of_train, form.Look_back, form.Forecast_days, form.Crypto, form.First_layer, form.Second_layer, form.Third_layer, index_one, index_two, index_three, form.Learning_rate, form.Epoch, form.Batch_size, 333)
+	lastid, err := app.models.Insert(form.Name, app.sessionManager.GetInt(r.Context(), "authenticatedUserID"), form.Ratio_of_train, form.Look_back, form.Forecast_days, form.Crypto, form.First_layer, form.Second_layer, form.Third_layer, index_one, index_two, index_three, form.Learning_rate, form.Epoch, form.Batch_size, 999)
 	if err != nil {
 		app.serverError(w, err)
 		return
@@ -403,6 +413,7 @@ func (app *application) modelView(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := app.newTemplateData(r)
+	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
 	data.Model = model
 
 	app.render(w, http.StatusOK, "view.html", data)

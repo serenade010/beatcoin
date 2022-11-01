@@ -1,15 +1,22 @@
 {{define "title"}}Model #{{.Model.Id}}{{end}} {{define "main"}}
 <head>
-  <link rel="stylesheet" href="/static/css/create.css" />
+  <link rel="stylesheet" href="/static/css/view.css" />
   <script src="/static/js/create.js"></script>
 </head>
 
-<form action="/model/create" method="POST">
+<form id="put-form" action="/model/create" method="POST">
   <div class="column is-flex is-align-items-center is-flex-direction-column">
     <div class="column is-four-fifths">
       <label class="label">Name</label>
       <div class="control">
-        <input class="input" name="name" type="text" placeholder="Name" value="{{.Form.Name}}" />
+        <input
+          class="input"
+          name="name"
+          type="text"
+          placeholder="Name"
+          value="{{.Model.Name}}"
+          disabled="true"
+        />
       </div>
     </div>
     <div class="column is-four-fifths is-flex">
@@ -107,20 +114,42 @@
       <div class="column">
         <label class="label">Ratio of Train Data</label>
         <div class="control">
-          <input class="input" name="ratio_of_train" type="number" placeholder="0.8" step="0.1" />
+          <input
+            class="input"
+            name="ratio_of_train"
+            type="number"
+            placeholder="0.8"
+            step="0.1"
+            value="{{.Model.Ratio_of_train}}"
+            disabled="true"
+          />
         </div>
       </div>
 
       <div class="column">
         <label class="label">Look Back Days</label>
         <div class="control">
-          <input class="input" name="look_back" type="number" placeholder="5" />
+          <input
+            class="input"
+            name="look_back"
+            type="number"
+            placeholder="5"
+            value="{{.Model.Look_back}}"
+            disabled="true"
+          />
         </div>
       </div>
       <div class="column">
         <label class="label">Forcast Days</label>
         <div class="control">
-          <input class="input" name="forcast_days" type="number" placeholder="3" />
+          <input
+            class="input"
+            name="forcast_days"
+            type="number"
+            placeholder="3"
+            value="{{.Model.Forecast_days}}"
+            disabled="true"
+          />
         </div>
       </div>
     </div>
@@ -128,19 +157,40 @@
       <div class="column">
         <label class="label">First Layer Unit</label>
         <div class="control">
-          <input class="input" name="first_layer" type="number" placeholder="3" />
+          <input
+            class="input"
+            name="first_layer"
+            type="number"
+            placeholder="3"
+            value="{{.Model.First_layer}}"
+            disabled="true"
+          />
         </div>
       </div>
       <div class="column">
         <label class="label">Second Layer Unit</label>
         <div class="control">
-          <input class="input" name="second_layer" type="number" placeholder="3" />
+          <input
+            class="input"
+            name="second_layer"
+            type="number"
+            placeholder="3"
+            value="{{.Model.Second_layer.Int16}}"
+            disabled="true"
+          />
         </div>
       </div>
       <div class="column">
         <label class="label">Third Layer Unit</label>
         <div class="control">
-          <input class="input" name="third_layer" type="number" placeholder="3" />
+          <input
+            class="input"
+            name="third_layer"
+            type="number"
+            placeholder="3"
+            value="{{.Model.Third_layer.Int16}}"
+            disabled="true"
+          />
         </div>
       </div>
     </div>
@@ -148,19 +198,41 @@
       <div class="column">
         <label class="label">Learning Rate</label>
         <div class="control">
-          <input class="input" name="learning_rate" type="number" placeholder="0.9" step="0.1" />
+          <input
+            class="input"
+            name="learning_rate"
+            type="number"
+            placeholder="0.01"
+            step="0.01"
+            value="{{.Model.Learning_rate}}"
+            disabled="true"
+          />
         </div>
       </div>
       <div class="column">
         <label class="label">Epoch</label>
         <div class="control">
-          <input class="input" name="epoch" type="number" placeholder="3" />
+          <input
+            class="input"
+            name="epoch"
+            type="number"
+            placeholder="3"
+            value="{{.Model.Epoch}}"
+            disabled="true"
+          />
         </div>
       </div>
       <div class="column">
         <label class="label">Batch Size</label>
         <div class="control">
-          <input class="input" name="batch_size" type="number" placeholder="3" />
+          <input
+            class="input"
+            name="batch_size"
+            type="number"
+            placeholder="3"
+            value="{{.Model.Batch_size}}"
+            disabled="true"
+          />
         </div>
       </div>
     </div>
@@ -172,12 +244,30 @@
     <!-- ---------------------------------------------------------- -->
     <div class="field is-grouped">
       <div class="control">
-        <button class="button is-link" type="submit">Submit</button>
+        <button
+          class="button is-primary is-normal"
+          type="button"
+          onclick="toggleInput()"
+          id="btn-left"
+        >
+          Edit
+        </button>
       </div>
       <div class="control">
-        <a class="button is-link is-light" href="/">Cancel</a>
+        <button class="button is-link is-danger is-normal" id="btn-right" type="button">
+          Delete
+        </button>
       </div>
     </div>
   </div>
 </form>
+<!-- The Modal -->
+<div id="myModal" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p>Some text in the Modal..</p>
+  </div>
+</div>
+<script src="/static/js/view.js"></script>
 {{end}}

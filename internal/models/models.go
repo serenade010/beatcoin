@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 )
 
 type Model struct {
@@ -138,4 +139,24 @@ func (m *ModelModel) Belong(modelId int, userId int) bool {
 	} else {
 		return true
 	}
+}
+
+func (m *ModelModel) UpdateMAPE(modelId int, mape float64) error {
+	stmt := "SELECT modelerr FROM model WHERE id=$1"
+	row := m.DB.QueryRow(stmt, modelId)
+
+	var modelerr float64
+	err := row.Scan(&modelerr)
+	if err != nil {
+		return err
+	}
+	if mape <= modelerr {
+		fmt.Println(mape, modelerr)
+		stmt := "UPDATE model SET modelerr=$1 WHERE id=$2"
+		_, err := m.DB.Exec(stmt, mape, modelId)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

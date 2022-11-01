@@ -6,9 +6,23 @@
 </head>
 
 <body>
-  {{.Model.Name}}
+  <section class="section is-medium">
+    <div class="columns is-flex is-align-items-center is-justify-content-center">
+      <div class="column is-half">
+        <h1 class="title is-1">{{.Model.Name}}</h1>
+        <h2 class="subtitle">MAPE:{{.Result.Mape}}%</h2>
+        <h2 class="subtitle">RMSE:{{.Result.Rmse}}</h2>
+      </div>
+      <div class="column is-half">
+        <h1 class="title is-1 ml-6">Your postion :30th</h1>
+      </div>
+    </div>
+  </section>
+  <h2 class="title is-2 ml-6">Predict Price</h2>
   <div id="price"><!-- Plotly chart will be drawn inside this DIV --></div>
+  <h2 class="title is-2 ml-6">MSE</h2>
   <div id="mse"><!-- Plotly chart will be drawn inside this DIV --></div>
+  <h2 class="title is-2 ml-6">RMSE</h2>
   <div id="rmse"><!-- Plotly chart will be drawn inside this DIV --></div>
 </body>
 <script>
@@ -83,14 +97,14 @@
         y: y1,
 
         type: 'scatter',
-        // name: 'Price',
+        name: 'Predict Train',
       },
       {
         x: x2,
         y: y2,
 
         type: 'scatter',
-        // name: 'Price',
+        name: 'Predict Test',
       },
     ];
     Plotly.newPlot('price', data);
