@@ -128,7 +128,7 @@
       let modelpos = golangVar.indexOf(e.value);
       indexarr = [golangVar[modelpos + 1], golangVar[modelpos + 2], golangVar[modelpos + 3]];
 
-      for (var i = 0; i < indexarr.length; i++) {
+      for (var i = 0; i <= indexarr.length; i++) {
         if (indexarr[i] === 'null') {
           indexarr.splice(i, 1);
           i--;
@@ -202,48 +202,78 @@
       </ul>
     </div>
     <section class="content step-one">
-      <label for="start">Start date:</label>
+      <div
+        class="columns is-flex is-align-items-center is-justify-content-center"
+        style="margin-top: 80px"
+      >
+        <div class="column is-one-quarter is-flex is-align-items-center is-justify-content-center">
+          <label class="mr-4" for="start" style="color: black">Start:</label>
 
-      <input
-        class="input is-primary"
-        type="date"
-        id="start"
-        name="start"
-        value="2022-01-22"
-        min="2018-01-01"
-        max="2022-09-31"
-      />
-
-      <label for="start">End date:</label>
-      <input
-        class="input is-primary"
-        type="date"
-        id="end"
-        name="end"
-        value="2022-07-22"
-        min="2018-01-01"
-        max="2022-09-31"
-      />
-      <button class="button is-link" id="date-btn" type="button" onclick="fetchDateData(true)">
-        Select
-      </button>
+          <input
+            class="input"
+            type="date"
+            id="start"
+            name="start"
+            value="2022-01-22"
+            min="2018-01-01"
+            max="2022-09-31"
+          />
+        </div>
+        <div class="column is-one-quarter is-flex is-align-items-center is-justify-content-center">
+          <label class="mr-4" for="end" style="color: black">End:</label>
+          <input
+            class="input"
+            type="date"
+            id="end"
+            name="end"
+            value="2022-07-22"
+            min="2018-01-01"
+            max="2022-09-31"
+          />
+        </div>
+        <button
+          class="button is-link ml-4"
+          id="date-btn"
+          type="button"
+          style="width: 150px"
+          onclick="fetchDateData(true)"
+        >
+          Select
+        </button>
+      </div>
     </section>
 
     <section class="content step-two is-hide">
-      <div class="select">
-        <select id="select_index" name="model">
-          {{range $i, $e :=.MyModels}}
-          <option value="{{.Name}}">{{.Name}}</option>
-          {{end}}
-        </select>
-        <button class="button is-link" id="index-btn" type="button" onclick="fetchIndicator()">
+      <div
+        class="columns is-flex is-align-items-center is-justify-content-center"
+        style="margin-top: 80px"
+      >
+        <div class="select">
+          <select id="select_index" name="model" style="width: 300px">
+            {{range $i, $e :=.MyModels}}
+            <option value="{{.Name}}">{{.Name}}</option>
+            {{end}}
+          </select>
+        </div>
+        <button
+          class="button is-link"
+          id="index-btn"
+          type="button"
+          style="width: 200px; margin-left: 100px"
+          onclick="fetchIndicator()"
+        >
           Draw Plot
         </button>
       </div>
     </section>
     <section class="content step-three is-hide">
       <div class="control">
-        <button class="button is-link" type="submit">Train</button>
+        <div
+          class="columns is-flex is-align-items-center is-justify-content-center"
+          style="margin-top: 80px"
+        >
+          <button class="button is-link" type="submit" style="width: 200px">Train&nbsp;!!!</button>
+        </div>
       </div>
     </section>
   </form>
