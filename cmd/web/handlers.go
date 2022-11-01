@@ -17,6 +17,7 @@ import (
 
 // Global Variable
 var TrainingModel models.Model
+var DeletingModel models.Model
 var TrainingResult Response
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -415,6 +416,18 @@ func (app *application) modelView(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
 	data.Model = model
-
+	DeletingModel = *model
 	app.render(w, http.StatusOK, "view.html", data)
+}
+
+func (app *application) modelDelete(w http.ResponseWriter, r *http.Request) {
+
+	err := app.models.DeleteModel(DeletingModel.Id)
+	if err != nil {
+		app.serverError(w, err)
+	}
+
+	app.sessionManager.Put(r.Context(), "flash", "Model successfully deleted!")
+
+	http.Redirect(w, r, "/model/mymodel/", http.StatusSeeOther)
 }

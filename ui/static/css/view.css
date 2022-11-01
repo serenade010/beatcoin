@@ -22,6 +22,7 @@
 
 /* Modal Content/Box */
 .modal-content {
+    display: flex;
     background-color: #fefefe;
     margin: 15% auto;
     /* 15% from the top and centered */
@@ -37,6 +38,7 @@
     float: right;
     font-size: 28px;
     font-weight: bold;
+
 }
 
 .close:hover,
@@ -44,4 +46,4 @@
     color: black;
     text-decoration: none;
     cursor: pointer;
-} 
+}

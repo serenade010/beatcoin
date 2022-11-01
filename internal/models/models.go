@@ -160,3 +160,12 @@ func (m *ModelModel) UpdateMAPE(modelId int, mape float64) error {
 	}
 	return nil
 }
+
+func (m *ModelModel) DeleteModel(modelId int) error {
+	stmt := "DELETE FROM model WHERE id=$1"
+	_, err := m.DB.Exec(stmt, modelId)
+	if err != nil {
+		return err
+	}
+	return nil
+}

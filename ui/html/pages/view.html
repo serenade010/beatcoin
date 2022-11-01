@@ -264,9 +264,15 @@
 <!-- The Modal -->
 <div id="myModal" class="modal">
   <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <p>Some text in the Modal..</p>
+  <div
+    style="width: 500px; height: 200px"
+    class="modal-content columnn is-flex is-align-items-center is-flex-direction-column"
+  >
+    <span class="close" style="position: absolute; top: 3px; right: 20px">&times;</span>
+    <h2 class="subtitle mt-6">Are you sure to delete Model: {{.Model.Name}}</h2>
+    <form id="model-delete" action="/model/delete" method="get">
+      <button class="button is-danger mt-2">Yes</button>
+    </form>
   </div>
 </div>
 <script src="/static/js/view.js"></script>
