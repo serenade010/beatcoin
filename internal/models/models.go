@@ -161,6 +161,15 @@ func (m *ModelModel) UpdateMAPE(modelId int, mape float64) error {
 	return nil
 }
 
+func (m *ModelModel) UpdateModel(modelId int, name string, ratio_of_train float32, look_back int, forecast_days int, crypto string, first_layer int, second_layer int, third_layer int, first_index string, second_index string, third_index string, learning_rate float32, epoch int, batch_size int) error {
+	stmt := "UPDATE model SET modelname=$1,ratio_of_train=$2, look_back=$3, forecast_days=$4, crypto =$5, first_layer=$6, second_layer=$7, third_layer=$8, first_index=$9 ,second_index=$10, third_index=$11,learning_rate=$12, epoch=$13, batch_size=$14 WHERE id=$15"
+	_, err := m.DB.Exec(stmt, name, ratio_of_train, look_back, forecast_days, crypto, first_layer, second_layer, third_layer, first_index, second_index, third_index, learning_rate, epoch, batch_size, modelId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (m *ModelModel) DeleteModel(modelId int) error {
 	stmt := "DELETE FROM model WHERE id=$1"
 	_, err := m.DB.Exec(stmt, modelId)

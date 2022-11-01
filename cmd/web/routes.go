@@ -35,6 +35,7 @@ func (app *application) routes() http.Handler {
 	router.Handler(http.MethodGet, "/model/view/:id", protected.ThenFunc(app.modelView))
 	router.Handler(http.MethodGet, "/model/create", protected.ThenFunc(app.modelCreate))
 	router.Handler(http.MethodPost, "/model/create", protected.ThenFunc(app.modelCreatePost))
+	router.Handler(http.MethodPost, "/model/modify", protected.ThenFunc(app.modelModify))
 	router.Handler(http.MethodGet, "/model/delete", protected.ThenFunc(app.modelDelete))
 	router.Handler(http.MethodGet, "/model/train", protected.ThenFunc(app.modelTrain))
 	router.Handler(http.MethodPost, "/model/train", protected.ThenFunc(app.modelTrainPost))

@@ -1,10 +1,9 @@
 {{define "title"}}Model #{{.Model.Id}}{{end}} {{define "main"}}
 <head>
   <link rel="stylesheet" href="/static/css/view.css" />
-  <script src="/static/js/create.js"></script>
 </head>
 
-<form id="put-form" action="/model/create" method="POST">
+<form id="put-form" action="/model/modify" method="POST">
   <div class="column is-flex is-align-items-center is-flex-direction-column">
     <div class="column is-four-fifths">
       <label class="label">Name</label>
@@ -23,19 +22,19 @@
       <div class="column"><label class="label">Crypto</label></div>
       <div class="column">
         <label class="radio">
-          <input type="radio" name="crypto" value="bitcoin" />
+          <input type="radio" name="crypto" value="bitcoin" id="bitcoin" disabled="true" />
           Bitcoin
         </label>
       </div>
       <div class="column">
         <label class="radio">
-          <input type="radio" name="crypto" value="ethereum" />
+          <input type="radio" name="crypto" value="ethereum" id="ethereum" disabled="true" />
           Ethereum
         </label>
       </div>
       <div class="column">
         <label class="radio">
-          <input type="radio" name="crypto" value="solana" />
+          <input type="radio" name="crypto" value="solana" id="solana" disabled="true" />
           Solana
         </label>
       </div>
@@ -51,6 +50,8 @@
           name="index"
           onclick="checkboxControl(0)"
           value="DEMA"
+          disabled="true"
+          id="DEMA"
         />
         <span>DEMA</span>
       </div>
@@ -60,8 +61,9 @@
           class="checkbox"
           name="index"
           onclick="checkboxControl(1)"
-          id="1"
+          id="EMA"
           value="EMA"
+          disabled="true"
         />
         <span>EMA</span>
       </div>
@@ -71,8 +73,9 @@
           class="checkbox"
           name="index"
           onclick="checkboxControl(2)"
-          id="1"
+          id="KAMA"
           value="KAMA"
+          disabled="true"
         />
         <span>KAMA</span>
       </div>
@@ -82,10 +85,11 @@
           class="checkbox"
           name="index"
           onclick="checkboxControl(3)"
-          id="1"
-          value="SAR"
+          id="T3"
+          value="T3"
+          disabled="true"
         />
-        <span>SAR</span>
+        <span>T3</span>
       </div>
       <div class="column">
         <input
@@ -93,10 +97,11 @@
           class="checkbox"
           name="index"
           onclick="checkboxControl(4)"
-          id="1"
-          value="CCI"
+          id="WMA"
+          value="WMA"
+          disabled="true"
         />
-        <span>CCI</span>
+        <span>WMA</span>
       </div>
       <div class="column">
         <input
@@ -104,10 +109,11 @@
           class="checkbox"
           name="index"
           onclick="checkboxControl(5)"
-          id="1"
-          value="ADX"
+          id="MIDPOINT"
+          value="MIDPOINT"
+          disabled="true"
         />
-        <span>ADX</span>
+        <span>MIDPOINT</span>
       </div>
     </div>
     <div class="column is-four-fifths is-flex">
@@ -275,5 +281,16 @@
     </form>
   </div>
 </div>
+<script>
+  selectedCrypto = document.getElementById('{{.Model.Crypto}}');
+  selectedCrypto.setAttribute('checked', '');
+
+  index_one = document.getElementById('{{.Model.First_index.String}}');
+  index_two = document.getElementById('{{.Model.Second_index.String}}');
+  index_three = document.getElementById('{{.Model.Third_index.String}}');
+  index_one.setAttribute('checked', '');
+  index_two.setAttribute('checked', '');
+  index_three.setAttribute('checked', '');
+</script>
 <script src="/static/js/view.js"></script>
 {{end}}

@@ -17,7 +17,7 @@ import (
 
 // Global Variable
 var TrainingModel models.Model
-var DeletingModel models.Model
+var SelectingModel models.Model
 var TrainingResult Response
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -416,13 +416,43 @@ func (app *application) modelView(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.User = app.users.UserInfo(app.sessionManager.GetInt(r.Context(), "authenticatedUserID"))
 	data.Model = model
-	DeletingModel = *model
+	SelectingModel = *model
 	app.render(w, http.StatusOK, "view.html", data)
+}
+
+func (app *application) modelModify(w http.ResponseWriter, r *http.Request) {
+	var form modelCreateForm
+
+	err := app.decodePostForm(r, &form)
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	var index_one, index_two, index_three string
+	for i, item := range r.PostForm["index"] {
+		switch i {
+		case 0:
+			index_one = item
+		case 1:
+			index_two = item
+		case 2:
+			index_three = item
+		}
+
+	}
+
+	err = app.models.UpdateModel(SelectingModel.Id, form.Name, form.Ratio_of_train, form.Look_back, form.Forecast_days, form.Crypto, form.First_layer, form.Second_layer, form.Third_layer, index_one, index_two, index_three, form.Learning_rate, form.Epoch, form.Batch_size)
+	if err != nil {
+		app.serverError(w, err)
+	}
+	app.sessionManager.Put(r.Context(), "flash", "Model successfully updated!")
+	http.Redirect(w, r, "/model/view/"+strconv.Itoa(SelectingModel.Id), http.StatusSeeOther)
 }
 
 func (app *application) modelDelete(w http.ResponseWriter, r *http.Request) {
 
-	err := app.models.DeleteModel(DeletingModel.Id)
+	err := app.models.DeleteModel(SelectingModel.Id)
 	if err != nil {
 		app.serverError(w, err)
 	}
